@@ -6,7 +6,7 @@ import Navbar from "../../components/Navbar";
 
 
 
-const  Library = () => {
+const Library = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -33,7 +33,7 @@ const  Library = () => {
   );
 };
 
-export default  Library;
+export default Library;
 
 
 

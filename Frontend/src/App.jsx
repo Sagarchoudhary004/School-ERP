@@ -9,6 +9,7 @@ import Exams from "./pages/Exams/Exams.jsx";
 import Transport from "./pages/Transport/Transport.jsx";
 import Setting from "./pages/Setting/Setting.jsx";
 import NewAdmission from "./pages/Admission/NewAdmission";
+import Library from "./pages/Library/Library.jsx";
 
 
 function App() {
@@ -24,10 +25,11 @@ function App() {
       <Route path="/exams" element={<Exams />} />
       <Route path="/transport" element={<Transport />} />
       <Route path="/settings" element={<Setting />} />
-<Route
-  path="/admission"
-  element={<NewAdmission />}
-/>
+      <Route path="/library" element={<Library />} />
+      <Route
+        path="/admission"
+        element={<NewAdmission />}
+      />
 
 
     </Routes>
