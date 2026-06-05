@@ -8,6 +8,8 @@ import FeeandFinance from "./pages/Fees/FeeandFinance.jsx";
 import Exams from "./pages/Exams/Exams.jsx";
 import Transport from "./pages/Transport/Transport.jsx";
 import Setting from "./pages/Setting/Setting.jsx";
+import NewAdmission from "./pages/Admission/NewAdmission";
+
 
 function App() {
   return (
@@ -22,6 +24,12 @@ function App() {
       <Route path="/exams" element={<Exams />} />
       <Route path="/transport" element={<Transport />} />
       <Route path="/settings" element={<Setting />} />
+<Route
+  path="/admission"
+  element={<NewAdmission />}
+/>
+
+
     </Routes>
   );
 }
