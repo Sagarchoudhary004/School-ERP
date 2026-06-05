@@ -9,14 +9,16 @@ import Documents from "./Documents";
 
 const NewAdmission = () => {
   const [step, setStep] = useState(1);
+ const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#f5f7fb] md:flex">
-      <Sidebar />
+  <div className="min-h-screen bg-[#f5f7fb]">
 
-      <main className="flex-1 p-6">
+    <Sidebar  mobileOpen={mobileSidebarOpen}
+        onClose={() => setMobileSidebarOpen(false)}/>
 
-        <Navbar />
+    <main className="md:ml-[280px] p-5 overflow-auto min-h-screen">
+        <Navbar onMenuClick={() => setMobileSidebarOpen(true)} />
 
         <div className="mt-6">
 
@@ -32,9 +34,9 @@ const NewAdmission = () => {
 
         {/* Step Indicator */}
 
-        <div className="bg-white rounded-xl p-5 mt-6">
+        <div className="bg-white rounded-2xl p-5 mt-6">
 
-          <div className="flex justify-between">
+          <div className="flex flex-wrap gap-4 justify-between">
 
             <StepItem
               number={1}
@@ -108,7 +110,7 @@ const StepItem = ({
   title,
   active,
 }) => (
-  <div className="flex items-center gap-3">
+  <div className="flex items-center gap-2 min-w-[140px]">
 
     <div
       className={`w-8 h-8 rounded-full flex items-center justify-center text-white
@@ -121,7 +123,9 @@ const StepItem = ({
       {number}
     </div>
 
-    <span>{title}</span>
+    <span className="text-sm md:text-base">
+  {title}
+</span>
 
   </div>
 );
