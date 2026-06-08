@@ -1,17 +1,14 @@
+
 import React from 'react'
 import { useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
-import AuditLogs from './AuditLogs';
-import Integrations from './Integrations';
-import Masters from './Masters';
-import SchoolProfile from './SchoolProfile';
 
 
 
-const  Setting = () => {
+const Library = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [selectedSetting, setSelectedSetting] = useState("schoolProfile");
+
   return (
     <div className="min-h-screen bg-[#f5f7fb]">
       <Sidebar
@@ -27,7 +24,7 @@ const  Setting = () => {
           <div className="space-y-4 md:space-y-6">
 
             {/* Your page content goes here */}
-            <h1 className="text-2xl font-bold">Welcome to Setting Page</h1>
+            <h1 className="text-2xl font-bold">Welcome to Library Page</h1>
 
           </div>
         </main>
@@ -36,7 +33,7 @@ const  Setting = () => {
   );
 };
 
-export default  Setting;
+export default Library;
 
 
 
