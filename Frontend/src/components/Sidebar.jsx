@@ -82,19 +82,19 @@ import {
 } from "react-icons/fa";
 
 import logo from "../assets/logo.png";
+import {NavLink} from "react-router-dom"
 
 const Sidebar = () => {
   const menu = [
-    { icon: <FaHome />, name: "Dashboard" },
-    { icon: <FaUserGraduate />, name: "Students" },
-    { icon: <FaChalkboardTeacher />, name: "Teachers" },
-    { icon: <FaClipboardCheck />, name: "Attendance" },
-    { icon: <FaCalendarAlt />, name: "Timetable" },
-    { icon: <FaMoneyBill />, name: "Fees & Finance" },
-    { icon: <FaFileAlt />, name: "Exams" },
-    { icon: <FaBook />, name: "Library" },
-    { icon: <FaBus />, name: "Transport" },
-    { icon: <FaCog />, name: "Settings" },
+    { icon: <FaHome />, name: "Dashboard",path:"/" },
+    { icon: <FaUserGraduate />, name: "Students",path:"/Student" },
+    { icon: <FaChalkboardTeacher />, name: "Teachers",path:"/Teacher" },
+    { icon: <FaClipboardCheck />, name: "Attendance",path:"/Attendence" },
+    { icon: <FaCalendarAlt />, name: "Timetable",path:"/Timetable" },
+    { icon: <FaMoneyBill />, name: "Fees & Finance",path:"/FeeandFinance" },
+    { icon: <FaFileAlt />, name: "Exams",path:"/Exams" },
+    { icon: <FaBus />, name: "Transport",path:"/Transport" },
+    { icon: <FaCog />, name: "Settings",path:"/Setting" },
   ];
 
   return (
@@ -122,18 +122,18 @@ const Sidebar = () => {
       {/* Menu */}
       <div className="space-y-1 flex-1">
         {menu.map((item, index) => (
-          <div
-            key={index}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all
-            ${
-              index === 0
-                ? "bg-[#4f46e5]"
-                : "hover:bg-[#0f215f]"
-            }`}
-          >
-            {item.icon}
-            {item.name}
-          </div>
+          <NavLink
+          key={index}
+          to={item.path}
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+          isActive? "bg-[#4f46e5]": "hover:bg-[#0f215f]"
+    }`
+  }
+>
+  {item.icon}
+  <span>{item.name}</span>
+</NavLink>
         ))}
       </div>
 
