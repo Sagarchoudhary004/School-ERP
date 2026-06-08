@@ -2,12 +2,16 @@ import React from 'react'
 import { useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
+import AuditLogs from './AuditLogs';
+import Integrations from './Integrations';
+import Masters from './Masters';
+import SchoolProfile from './SchoolProfile';
 
 
 
 const  Setting = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+  const [selectedSetting, setSelectedSetting] = useState("schoolProfile");
   return (
     <div className="min-h-screen bg-[#f5f7fb]">
       <Sidebar

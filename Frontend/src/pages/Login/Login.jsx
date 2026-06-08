@@ -1,4 +1,5 @@
-import logo from '../assets/dee-campus-main-logo-CKnHLXIu (1).png'
+import logo from "../../assets/logo.png";
+
 
 const stats = [
   {

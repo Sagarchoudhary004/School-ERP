@@ -25,7 +25,20 @@ const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
     { icon: <FaFileAlt />, name: "Exams", path: "/exams" },
     { icon: <FaBook />, name: "Library", path: "/library" },
     { icon: <FaBus />, name: "Transport", path: "/transport" },
-    { icon: <FaCog />, name: "Settings", path: "/settings" },
+    { icon: <FaCog />, name: "Settings", path: "/settings", 
+      subRoutes:[{ icon: <FaCog />, name: "auditlogs", path: "/settings/auditlogs", 
+
+      },
+      { icon: <FaCog />, name: "integration", path: "/settings/integration", 
+
+      },
+      { icon: <FaCog />, name: "masters", path: "/settings/masters", 
+
+      },
+      { icon: <FaCog />, name: "schoolprofile", path: "/settings/schoolprofile", 
+
+      },]
+    },
   ];
 
   return (

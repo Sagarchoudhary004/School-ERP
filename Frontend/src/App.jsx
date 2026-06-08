@@ -11,7 +11,7 @@ import Setting from "./pages/Setting/Setting.jsx";
 import NewAdmission from "./pages/Admission/NewAdmission";
 import Library from "./pages/Library/Library.jsx";
 
-
+import Login from "./pages/Login/Login.jsx"
 function App() {
   return (
     <Routes>
@@ -33,6 +33,7 @@ function App() {
 
 
     </Routes>
+    // <Login/>
   );
 }
 
