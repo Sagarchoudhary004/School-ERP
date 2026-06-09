@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import {
   FaHome,
@@ -20,22 +19,21 @@ import {NavLink} from "react-router-dom"
 
 const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
   const menu = [
-    { icon: <FaHome />, name: "Dashboard", path: "/dashboard" },
-    { icon: <FaUserGraduate />, name: "Students", path: "/students" },
-    { icon: <FaChalkboardTeacher />, name: "Teachers", path: "/teachers" },
-    { icon: <FaClipboardCheck />, name: "Attendance", path: "/attendance" },
-    { icon: <FaCalendarAlt />, name: "Timetable", path: "/timetable" },
-    { icon: <FaMoneyBill />, name: "Fees & Finance", path: "/fees" },
-    { icon: <FaFileAlt />, name: "Exams", path: "/exams" },
-    { icon: <FaBook />, name: "Library", path: "/library" },
-    { icon: <FaBus />, name: "Transport", path: "/transport" },
+    { icon: <FaHome />, name: "Dashboard", path: "/Dashboard" },
+    { icon: <FaUserGraduate />, name: "Students", path: "/Student" },
+    { icon: <FaChalkboardTeacher />, name: "Teachers", path: "/Teacher" },
+    { icon: <FaClipboardCheck />, name: "Attendance", path: "/Attendence" },
+    { icon: <FaCalendarAlt />, name: "Timetable", path: "/Timetable" },
+    { icon: <FaMoneyBill />, name: "Fees & Finance", path: "/Fees" },
+    { icon: <FaFileAlt />, name: "Exams", path: "/Exams" },
+    { icon: <FaBus />, name: "Transport", path: "/Transport" },
     {
-      icon: <FaCog />, name: "Settings", path: "/settings",
+      icon: <FaCog />, name: "Settings",
       subRoutes: [
-        { icon: <FaCog />, name: "Audit Logs", path: "/settings/auditlogs" },
-        { icon: <FaCog />, name: "Integration", path: "/settings/integration" },
-        { icon: <FaCog />, name: "Masters", path: "/settings/masters" },
-        { icon: <FaCog />, name: "School Profile", path: "/settings/schoolprofile" },
+        { icon: <FaCog />, name: "Audit Logs", path: "/Settings/Audit-Logs" },
+        { icon: <FaCog />, name: "Integration", path: "/Settings/Integration" },
+        { icon: <FaCog />, name: "Masters", path: "/Settings/Masters" },
+        { icon: <FaCog />, name: "School Profile", path: "/Settings/School-Profile" },
       ],
     },
   ];
@@ -95,20 +93,20 @@ const SidebarContent = ({ menu }) => {
               {openDropdown === index && (
                 <div className="ml-4 pl-3 border-l border-white/10 space-y-1 mt-1">
                   {item.subRoutes.map((sub, subIndex) => (
-                    <Link
+                    <NavLink
                       key={subIndex}
                       to={sub.path}
                       className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-[#0f215f] hover:text-white transition-all"
                     >
                       <span>{sub.icon}</span>
                       <span>{sub.name}</span>
-                    </Link>
+                    </NavLink>
                   ))}
                 </div>
               )}
             </div>
           ) : (
-            <Link
+            <NavLink
               key={index}
               to={item.path}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
@@ -117,7 +115,7 @@ const SidebarContent = ({ menu }) => {
             >
               <span>{item.icon}</span>
               <span className="text-sm">{item.name}</span>
-            </Link>
+            </NavLink>
           )
         )}
       </div>

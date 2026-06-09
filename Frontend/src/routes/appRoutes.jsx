@@ -10,6 +10,10 @@ import Exams from "../pages/Exams/Exams";
 import Setting from "../pages/Setting/Setting"
 import DashboardLayout from "../layouts/Dasboardlayout";
 import Login from "../pages/Login/Login";
+import Integrations from "../pages/Setting/Integrations";
+import AuditLogs from "../pages/Setting/AuditLogs";
+import Masters from "../pages/Setting/Masters";
+import SchoolProfile from "../pages/Setting/SchoolProfile";
 
 function AppRoutes(){
     return(
@@ -23,9 +27,12 @@ function AppRoutes(){
             <Route path="/Teacher" element={<Teacher/>}/>
             <Route path="/Attendence" element={<Attendence/>}/>
             <Route path="/Timetable" element={<Timetable/>}/>
-            <Route path="/FeeandFinance" element={<FeeandFinance/>}/>
+            <Route path="/Fees" element={<FeeandFinance/>}/>
             <Route path="/Exams" element={<Exams/>}/>
-            <Route path="/Setting" element={<Setting/>}/>
+            <Route path="/Settings/Audit-Logs" element={<AuditLogs/>}/>
+            <Route path="/Settings/Integration" element={<Integrations/>}/>
+            <Route path="/Settings/Masters" element={<Masters/>}/>
+            <Route path="/Settings/School-Profile" element={<SchoolProfile/>}/>
             </Route>
         </Routes>
 
