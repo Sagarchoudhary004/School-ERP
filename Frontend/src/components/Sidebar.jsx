@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaHome,
   FaUserGraduate,
@@ -15,7 +15,7 @@ import {
 } from "react-icons/fa";
 
 import logo from "../assets/logo.png";
-import {NavLink} from "react-router-dom"
+import { NavLink, useLocation } from "react-router-dom"
 
 const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
   const menu = [
@@ -61,7 +61,19 @@ const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
 };
 
 const SidebarContent = ({ menu }) => {
-  const [openDropdown, setOpenDropdown] = useState(null); // ✅ Added
+  const location = useLocation();
+  const activeDropdownIndex = menu.findIndex((item) =>
+    item.subRoutes?.some((sub) => sub.path === location.pathname)
+  );
+  const [openDropdown, setOpenDropdown] = useState(
+    activeDropdownIndex === -1 ? null : activeDropdownIndex
+  ); // ✅ Added
+
+  useEffect(() => {
+    if (activeDropdownIndex !== -1) {
+      setOpenDropdown(activeDropdownIndex);
+    }
+  }, [activeDropdownIndex]);
 
   return (
     <>
@@ -83,7 +95,11 @@ const SidebarContent = ({ menu }) => {
             <div key={index}>
               <button
                 onClick={() => setOpenDropdown(openDropdown === index ? null : index)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#0f215f] transition-all"
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#0f215f] transition-all ${
+                  item.subRoutes.some((sub) => sub.path === location.pathname)
+                    ? "bg-[#0f215f]"
+                    : ""
+                }`}
               >
                 <span>{item.icon}</span>
                 <span className="flex-1 text-left text-sm">{item.name}</span>
@@ -96,7 +112,11 @@ const SidebarContent = ({ menu }) => {
                     <NavLink
                       key={subIndex}
                       to={sub.path}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-[#0f215f] hover:text-white transition-all"
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-[#0f215f] hover:text-white transition-all ${
+                          isActive ? "bg-[#0f215f] text-white" : "text-gray-400"
+                        }`
+                      }
                     >
                       <span>{sub.icon}</span>
                       <span>{sub.name}</span>
@@ -109,9 +129,12 @@ const SidebarContent = ({ menu }) => {
             <NavLink
               key={index}
               to={item.path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                index === 0 ? "bg-[#4f46e5]" : "hover:bg-[#0f215f]"
-              }`}
+              end
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                  isActive ? "bg-[#4f46e5]" : "hover:bg-[#0f215f]"
+                }`
+              }
             >
               <span>{item.icon}</span>
               <span className="text-sm">{item.name}</span>

@@ -1,16 +1,22 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { Outlet } from "react-router-dom";
+import { useState } from "react";
 
 function DashboardLayout() {
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
   return (
-    <div className="flex">
+    <div className="min-h-screen md:pl-[280px]">
 
-      <Sidebar />
+      <Sidebar
+        mobileOpen={mobileSidebarOpen}
+        onClose={() => setMobileSidebarOpen(false)}
+      />
 
-      <div className="flex-1">
+      <div className="min-w-0">
 
-        <Navbar />
+        <Navbar onMenuClick={() => setMobileSidebarOpen(true)} />
 
         <div className="p-5">
           <Outlet />
