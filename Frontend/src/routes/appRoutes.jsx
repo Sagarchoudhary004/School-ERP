@@ -12,7 +12,7 @@ import DashboardLayout from "../layouts/Dasboardlayout";
 import Login from "../pages/Login/Login";
 import Integrations from "../pages/Setting/Integrations";
 import AuditLogs from "../pages/Setting/AuditLogs";
-import Masters from "../pages/Setting/Masters";
+import Masters from "../pages/Setting/Masters-pages/Masters";
 import SchoolProfile from "../pages/Setting/SchoolProfile";
 
 function AppRoutes(){
