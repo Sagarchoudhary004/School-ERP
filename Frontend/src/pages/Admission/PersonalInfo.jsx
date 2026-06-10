@@ -1,64 +1,29 @@
 const PersonalInfo = ({ next }) => {
   return (
-    <div className="bg-white rounded-xl p-6">
+    <div className="space-y-5">
+      <h2 className="text-lg sm:text-xl font-semibold">Personal Information</h2>
 
-      <h2 className="font-semibold mb-5">
-        Personal Information
-      </h2>
-
-      <div className="grid md:grid-cols-2 gap-5">
-
-        <input
-          placeholder="First Name"
-          className="border p-3 rounded-lg"
-        />
-
-        <input
-          placeholder="Last Name"
-          className="border p-3 rounded-lg"
-        />
-
-        <input
-          type="date"
-          className="border p-3 rounded-lg"
-        />
-
-        <select
-          className="border p-3 rounded-lg"
-        >
-          <option>
-            Select Gender
-          </option>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:gap-5">
+        <input placeholder="First Name" className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500" />
+        <input placeholder="Last Name" className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500" />
+        <input type="date" className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500" />
+        <select className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500">
+          <option>Select Gender</option>
         </select>
-
-        <input
-          placeholder="Phone"
-          className="border p-3 rounded-lg"
-        />
-
-        <input
-          placeholder="Email"
-          className="border p-3 rounded-lg"
-        />
-
+        <input placeholder="Phone" className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500" />
+        <input placeholder="Email" className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500" />
       </div>
 
       <textarea
         placeholder="Address"
-        className="border p-3 rounded-lg w-full mt-5"
+        className="mt-5 w-full rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500"
       />
 
-      <div className="flex justify-end mt-6">
-
-        <button
-          onClick={next}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg"
-        >
+      <div className="flex justify-end">
+        <button onClick={next} className="rounded-lg bg-blue-600 px-6 py-3 text-white">
           Next →
         </button>
-
       </div>
-
     </div>
   );
 };

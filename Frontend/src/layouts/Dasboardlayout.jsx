@@ -7,7 +7,7 @@ function DashboardLayout() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen md:pl-[280px]">
+    <div className="min-h-screen bg-slate-50 md:pl-[280px]">
 
       <Sidebar
         mobileOpen={mobileSidebarOpen}
@@ -18,7 +18,7 @@ function DashboardLayout() {
 
         <Navbar onMenuClick={() => setMobileSidebarOpen(true)} />
 
-        <div className="p-5">
+        <div className="p-4 sm:p-5 lg:p-6">
           <Outlet />
         </div>
 

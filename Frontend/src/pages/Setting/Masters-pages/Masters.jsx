@@ -1,99 +1,47 @@
-import React, { useState } from 'react'
+import { NavLink, Outlet } from "react-router-dom";
 
-import AcademicYears from './AcademicYears'
-import AcademicCalendar from './AcademicCalendar'
-import ClassSections from './ClassSections'
-import Departments from './Departments'
-import Designations from './Designations'
-import Subjects from './Subjects'
-import ExamTypes from './ExamTypes'
-import Categories from './Categories'
+const tabs = [
+  { label: "Academic Years", path: "Academic-Years" },
+  { label: "Exam Types", path: "Exam-Types" },
+  { label: "Class & Sections", path: "Class-Sections" },
+  { label: "Subjects", path: "Subjects" },
+  { label: "Departments", path: "Departments" },
+  { label: "Designations", path: "Designations" },
+  { label: "Categories", path: "Categories" },
+  { label: "Academic Calendar", path: "Academic-Calendar" },
+];
 
 export default function Masters() {
-
-  const tabs = [
-    "Academic Years",
-    "Exam Types",
-    "Class & Sections",
-    "Subjects",
-    "Departments",
-    "Designations",
-    "Categories",
-    "Academic Calendar",
-  ];
-
-  const [activeTab, setActiveTab] = useState("Academic Years");
-
   return (
-    <div className="p-6">
-
-      <h1 className="text-3xl font-bold">
-        Master Setup
-      </h1>
-
-      <p className="text-gray-500 mt-2">
-        Configure system masters and lookups
-      </p>
-
-      {/* Tabs */}
-
-      <div className="flex gap-2 mt-6 bg-gray-100 p-2 rounded-xl">
-
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-lg transition-all
-            ${
-              activeTab === tab
-                ? "bg-white shadow font-semibold text-blue-900"
-                : "text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-
+    <div className="space-y-5 sm:space-y-6">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold">Master Setup</h1>
+        <p className="mt-2 text-sm sm:text-base text-gray-500">
+          Configure system masters and lookups
+        </p>
       </div>
 
-      {/* Content */}
-
-      <div className="mt-6">
-
-        {activeTab === "Academic Years" &&
-          <AcademicYears />
-        }
-
-        {activeTab === "Exam Types" &&
-          <ExamTypes />
-        }
-
-        {activeTab === "Class & Sections" &&
-          <ClassSections />
-        }
-
-        {activeTab === "Subjects" &&
-          <Subjects />
-        }
-
-        {activeTab === "Departments" &&
-          <Departments />
-        }
-
-        {activeTab === "Designations" &&
-          <Designations />
-        }
-
-        {activeTab === "Categories" &&
-          <Categories />
-        }
-
-        {activeTab === "Academic Calendar" &&
-          <AcademicCalendar />
-        }
-
+      <div className="rounded-2xl bg-gray-100 p-2 overflow-x-auto">
+        <div className="flex min-w-max gap-2">
+          {tabs.map((tab) => (
+            <NavLink
+              key={tab.path}
+              to={tab.path}
+              className={({ isActive }) =>
+                `whitespace-nowrap rounded-xl px-4 py-2 text-sm sm:text-base transition-all ${
+                  isActive ? "bg-white text-blue-900 shadow font-semibold" : "text-gray-600 hover:bg-gray-200"
+                }`
+              }
+            >
+              {tab.label}
+            </NavLink>
+          ))}
+        </div>
       </div>
 
+      <div className="rounded-2xl bg-white p-4 sm:p-6 shadow-sm">
+        <Outlet />
+      </div>
     </div>
-  )
+  );
 }

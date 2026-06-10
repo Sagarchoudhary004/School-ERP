@@ -1,56 +1,23 @@
-const GuardianInfo = ({
-  next,
-  prev,
-}) => {
+const GuardianInfo = ({ next, prev }) => {
   return (
-    <div className="bg-white rounded-xl p-6">
+    <div className="space-y-5">
+      <h2 className="text-lg sm:text-xl font-semibold">Guardian Details</h2>
 
-      <h2 className="font-semibold mb-5">
-        Guardian Details
-      </h2>
-
-      <div className="grid md:grid-cols-2 gap-5">
-
-        <input
-          placeholder="Guardian Name"
-          className="border p-3 rounded-lg"
-        />
-
-        <input
-          placeholder="Phone Number"
-          className="border p-3 rounded-lg"
-        />
-
-        <input
-          placeholder="Occupation"
-          className="border p-3 rounded-lg"
-        />
-
-        <input
-          placeholder="Email"
-          className="border p-3 rounded-lg"
-        />
-
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:gap-5">
+        <input placeholder="Guardian Name" className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500" />
+        <input placeholder="Phone Number" className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500" />
+        <input placeholder="Occupation" className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500" />
+        <input placeholder="Email" className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500" />
       </div>
 
-      <div className="flex justify-between mt-6">
-
-        <button
-          onClick={prev}
-          className="border px-5 py-2 rounded-lg"
-        >
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+        <button onClick={prev} className="rounded-lg border border-slate-300 px-5 py-3">
           ← Previous
         </button>
-
-        <button
-          onClick={next}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg"
-        >
+        <button onClick={next} className="rounded-lg bg-blue-600 px-5 py-3 text-white">
           Next →
         </button>
-
       </div>
-
     </div>
   );
 };

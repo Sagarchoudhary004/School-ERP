@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaBell,
@@ -5,57 +6,49 @@ import {
   FaUserPlus,
   FaMoneyBillWave,
   FaPhoneAlt,
-  FaClipboardCheck
+  FaClipboardCheck,
 } from "react-icons/fa";
 
-import { useState, useRef, useEffect } from "react";
 import logo from "../assets/logo.png";
 
 const Navbar = ({ onMenuClick }) => {
   const navigate = useNavigate();
-
   const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef(null);
 
-  const menuRef = useRef();
   useEffect(() => {
-  const handler = (e) => {
-    if (
-      menuRef.current &&
-      !menuRef.current.contains(e.target)
-    ) {
-      setShowMenu(false);
-    }
-  };
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
 
-  document.addEventListener("mousedown", handler);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
-  return () => {
-    document.removeEventListener("mousedown", handler);
-  };
-}, []);
-
-const quickActions = [
-  {
-    title: "New Admission",
-    icon: <FaUserPlus className="text-blue-600" />,
-    route: "/admission",
-  },
-  {
-    title: "Collect Fee",
-    icon: <FaMoneyBillWave className="text-green-600" />,
-    route: "/fees",
-  },
-  {
-    title: "Add Enquiry",
-    icon: <FaPhoneAlt className="text-orange-500" />,
-    route: "/admissions/enquiry",
-  },
-  {
-    title: "Mark Attendance",
-    icon: <FaClipboardCheck className="text-purple-600" />,
-    route: "/attendance",
-  },
-];
+  const quickActions = [
+    {
+      title: "New Admission",
+      icon: <FaUserPlus className="text-blue-600" />,
+      route: "/Admission/New-Admission",
+    },
+    {
+      title: "Collect Fee",
+      icon: <FaMoneyBillWave className="text-green-600" />,
+      route: "/Fees",
+    },
+    {
+      title: "Add Enquiry",
+      icon: <FaPhoneAlt className="text-orange-500" />,
+      route: "/Student",
+    },
+    {
+      title: "Mark Attendance",
+      icon: <FaClipboardCheck className="text-purple-600" />,
+      route: "/Attendence",
+    },
+  ];
 
   return (
     <>
@@ -75,41 +68,36 @@ const quickActions = [
 
         <div className="flex items-center gap-3">
           <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setShowMenu(!showMenu)}
+              className="bg-[#4f46e5] text-white px-3 py-2 h-10 rounded-full text-sm font-medium whitespace-nowrap"
+            >
+              + Quick Create
+            </button>
 
-  <button
-    onClick={() => setShowMenu(!showMenu)}
-    className="bg-[#4f46e5] text-white px-3 py-2 h-10 rounded-full text-sm font-medium whitespace-nowrap"
-  >
-    + Quick Create
-  </button>
+            {showMenu && (
+              <div className="absolute right-0 mt-3 w-[260px] bg-white rounded-2xl shadow-xl border z-50 overflow-hidden">
+                <div className="px-4 py-3 border-b">
+                  <h3 className="font-semibold text-gray-700">Quick Actions</h3>
+                </div>
 
-  {showMenu && (
-    <div className="absolute right-0 mt-3 w-[260px] bg-white rounded-2xl shadow-xl border z-50 overflow-hidden">
+                {quickActions.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      navigate(item.route);
+                      setShowMenu(false);
+                    }}
+                    className="w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 text-left"
+                  >
+                    {item.icon}
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
-      <div className="px-4 py-3 border-b">
-        <h3 className="font-semibold text-gray-700">
-          Quick Actions
-        </h3>
-      </div>
-
-      {quickActions.map((item, index) => (
-        <button
-          key={index}
-          onClick={() => {
-            navigate(item.route);
-            setShowMenu(false);
-          }}
-          className="w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50"
-        >
-          {item.icon}
-          {item.title}
-        </button>
-      ))}
-
-    </div>
-  )}
-
-</div>
           <img
             src="https://i.pravatar.cc/50"
             alt="User avatar"
@@ -118,52 +106,46 @@ const quickActions = [
         </div>
       </div>
 
-      <div className="hidden md:flex bg-white p-5 rounded-3xl flex-col xl:flex-row gap-4 xl:gap-0 justify-between xl:items-center">
+      <div className="hidden md:flex bg-white p-4 lg:p-5 rounded-3xl flex-col xl:flex-row gap-4 xl:gap-0 justify-between xl:items-center shadow-sm">
         <input
           type="text"
           placeholder="Search students, staff, fees..."
-          className="w-full xl:w-[500px] border rounded-full px-5 py-3"
+          className="w-full xl:w-[500px] border rounded-full px-5 py-3 outline-none focus:border-[#4f46e5]"
         />
 
         <div className="flex flex-wrap gap-5 items-center justify-between xl:justify-end">
           <FaBell size={22} />
 
           <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setShowMenu(!showMenu)}
+              className="bg-[#4f46e5] text-white px-6 py-3 rounded-full"
+            >
+              + Quick Create
+            </button>
 
-  <button
-    onClick={() => setShowMenu(!showMenu)}
-    className="bg-[#4f46e5] text-white px-6 py-3 rounded-full"
-  >
-    + Quick Create
-  </button>
+            {showMenu && (
+              <div className="absolute right-0 top-14 w-72 bg-white rounded-2xl shadow-xl border z-50 overflow-hidden">
+                <div className="px-5 py-4 border-b">
+                  <h3 className="font-semibold text-gray-700">Quick Actions</h3>
+                </div>
 
-  {showMenu && (
-    <div className="absolute right-0 top-14 w-72 bg-white rounded-2xl shadow-xl border z-50 overflow-hidden">
-
-      <div className="px-5 py-4 border-b">
-        <h3 className="font-semibold text-gray-700">
-          Quick Actions
-        </h3>
-      </div>
-
-      {quickActions.map((item, index) => (
-        <button
-          key={index}
-          onClick={() => {
-            navigate(item.route);
-            setShowMenu(false);
-          }}
-          className="w-full flex items-center gap-4 px-5 py-4 hover:bg-gray-50"
-        >
-          {item.icon}
-          {item.title}
-        </button>
-      ))}
-
-    </div>
-  )}
-
-</div>
+                {quickActions.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      navigate(item.route);
+                      setShowMenu(false);
+                    }}
+                    className="w-full flex items-center gap-4 px-5 py-4 hover:bg-gray-50 text-left"
+                  >
+                    {item.icon}
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           <img
             src="https://i.pravatar.cc/50"

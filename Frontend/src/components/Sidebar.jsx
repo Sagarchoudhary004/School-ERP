@@ -6,16 +6,15 @@ import {
   FaClipboardCheck,
   FaCalendarAlt,
   FaMoneyBill,
-  FaBook,
-  FaBus,
   FaFileAlt,
+  FaBus,
   FaCog,
-  FaChevronDown, // ✅ Added
-  FaChevronUp,   // ✅ Added
+  FaChevronDown,
+  FaChevronUp,
 } from "react-icons/fa";
+import { NavLink, useLocation } from "react-router-dom";
 
 import logo from "../assets/logo.png";
-import { NavLink, useLocation } from "react-router-dom"
 
 const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
   const menu = [
@@ -28,8 +27,10 @@ const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
     { icon: <FaFileAlt />, name: "Exams", path: "/Exams" },
     { icon: <FaBus />, name: "Transport", path: "/Transport" },
     {
-      icon: <FaCog />, name: "Settings",
+      icon: <FaCog />,
+      name: "Settings",
       subRoutes: [
+        { icon: <FaCog />, name: "Overview", path: "/Settings" },
         { icon: <FaCog />, name: "Audit Logs", path: "/Settings/Audit-Logs" },
         { icon: <FaCog />, name: "Integration", path: "/Settings/Integration" },
         { icon: <FaCog />, name: "Masters", path: "/Settings/Masters" },
@@ -67,7 +68,7 @@ const SidebarContent = ({ menu }) => {
   );
   const [openDropdown, setOpenDropdown] = useState(
     activeDropdownIndex === -1 ? null : activeDropdownIndex
-  ); // ✅ Added
+  );
 
   useEffect(() => {
     if (activeDropdownIndex !== -1) {
@@ -150,7 +151,7 @@ const SidebarContent = ({ menu }) => {
         <p className="text-gray-300 text-xs md:text-sm tracking-wider">ACADEMIC YEAR</p>
         <h2 className="text-2xl md:text-3xl font-bold mt-2">2026-27</h2>
         <div className="flex items-center gap-2 mt-4">
-          <span className="w-2 h-2 rounded-full bg-green-500"></span>
+          <span className="w-2 h-2 rounded-full bg-green-500" />
           <span className="text-sm text-gray-300">Active Session</span>
         </div>
       </div>
