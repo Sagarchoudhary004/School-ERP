@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom'
+import { loginUser } from "../../services/authService";
+import { useState } from "react";
 import {
   FiArrowRight,
   FiEye,
@@ -87,7 +89,16 @@ function ResponsibilityCard() {
   )
 }
 
-function TextField({ id, label, type, placeholder, icon: Icon, trailing }) {
+function TextField({
+  id,
+  label,
+  type,
+  placeholder,
+  icon: Icon,
+  trailing,
+  value,
+  onChange
+}){
   return (
     <label htmlFor={id} className="block">
       <span className="mb-[13px] block text-[18px] font-extrabold leading-none text-[#0E1539]">
@@ -96,10 +107,12 @@ function TextField({ id, label, type, placeholder, icon: Icon, trailing }) {
       <span className="flex h-[65px] items-center rounded-[16px] border border-[#DDE2EE] bg-white px-[22px] shadow-[0_0_0_1px_rgba(19,30,63,0.015)] focus-within:border-[#7145FF] focus-within:ring-4 focus-within:ring-[#7145FF]/10">
         <Icon className="mr-[20px] h-[25px] w-[25px] shrink-0 text-[#828BA9]" aria-hidden="true" />
         <input
-          id={id}
-          name={id}
-          type={type}
-          placeholder={placeholder}
+        id={id}
+        name={id}
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
           className="min-w-0 flex-1 border-0 bg-transparent text-[22px] font-medium leading-none text-[#5F6886] outline-none placeholder:text-[#5F6886]"
         />
         {trailing}
@@ -108,7 +121,13 @@ function TextField({ id, label, type, placeholder, icon: Icon, trailing }) {
   )
 }
 
-function LoginCard({ onSubmit }) {
+function LoginCard({
+  onSubmit,
+  email,
+  setEmail,
+  password,
+  setPassword
+})  {
   return (
     <form
       onSubmit={onSubmit}
@@ -124,19 +143,27 @@ function LoginCard({ onSubmit }) {
       </header>
 
       <div className="mt-[48px] space-y-[31px]">
+       <TextField
+  id="email"
+  label="Email Address"
+  type="email"
+  icon={FiMail}
+  placeholder="admin@school.com"
+  value={email}
+  onChange={(e) =>
+    setEmail(e.target.value)
+  }
+/>
         <TextField
-          id="email"
-          label="Email Address"
-          type="email"
-          icon={FiMail}
-          placeholder="admin@school.com"
-        />
-        <TextField
-          id="password"
-          label="Password"
-          type="password"
-          icon={FiLock}
-          placeholder="••••••••"
+  id="password"
+  label="Password"
+  type="password"
+  icon={FiLock}
+  placeholder="••••••••"
+  value={password}
+  onChange={(e) =>
+    setPassword(e.target.value)
+  }
           trailing={
             <button type="button" aria-label="Show password" className="ml-[18px] text-[#828BA9]">
               <FiEye className="h-[25px] w-[25px]" aria-hidden="true" />
@@ -196,10 +223,29 @@ function LoginCard({ onSubmit }) {
 
 export default function Login() {
   const navigate = useNavigate()
-
-  const handleSubmit = (event) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleSubmit = async(event) => {
     event.preventDefault()
-    navigate('/Dashboard')
+    
+  try {
+   const response = await loginUser({
+      email,
+      password,
+    });
+
+    localStorage.setItem(
+      "token",
+      response.token
+    );
+
+    navigate("/Dashboard");
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
   }
 
   return (
@@ -241,7 +287,13 @@ export default function Login() {
 
       <section className="flex min-h-screen w-full items-center justify-center overflow-y-auto bg-gradient-to-br from-[#060A2E] via-[#0A0B36] to-[#301A8B] px-5 py-8 lg:h-screen lg:w-1/2 lg:overflow-hidden lg:px-[52px] lg:py-0">
         <div className="w-full max-w-[820px] [@media(max-height:850px)]:[zoom:.72] [@media(min-height:851px)]:[zoom:.88] [@media(min-height:1000px)]:[zoom:1]">
-          <LoginCard onSubmit={handleSubmit} />
+          <LoginCard
+  onSubmit={handleSubmit}
+  email={email}
+  setEmail={setEmail}
+  password={password}
+  setPassword={setPassword}
+/>
         </div>
       </section>
     </main>
