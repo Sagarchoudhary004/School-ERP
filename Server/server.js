@@ -3,6 +3,7 @@ import express from "express";
 import authRoutes from "./routes/authRoutes.js";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
+import academicyearRoutes from"./routes/academicYearRoutes.js"
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/academic-year",academicyearRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
