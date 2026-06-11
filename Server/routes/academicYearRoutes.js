@@ -5,7 +5,7 @@ import{
     deleteAcademicYear,
     getAcademicYear,
     updateAcademicYear,
-} from "../controllers/academicYearController"
+} from "../controllers/academicYearController.js"
 
 const router=express.Router();
 

@@ -1,4 +1,4 @@
-import Academicyear from "../models/Academicyear";
+import Academicyear from "../models/AcademicYear.js";
 
  export const createAcademicYear=
  async(req,res)=>{
@@ -29,7 +29,7 @@ import Academicyear from "../models/Academicyear";
         });
     }
      
- }, 
+ }; 
 
  export const getAcademicYear=async(req,res)=>{
     try{
