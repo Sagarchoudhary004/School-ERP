@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
 
+import {
+ getAcademicYears,
+ createAcademicYear,
+ updateAcademicYear,
+ deleteAcademicYear,
+} from "../../../services/academicYearServices";
+
 export default function AcademicYears() {
-  const [academicYears, setAcademicYears] = useState([
-    {
-      id: 1,
-      name: "2025-26",
-      startDate: "2025-04-01",
-      endDate: "2026-03-31",
-    },
-  ]);
+  const [academicYears, setAcademicYears] = useState([]);
 
   const [currentYear, setCurrentYear] = useState("2025-26");
   const [showModal, setShowModal] = useState(false);
@@ -17,7 +17,25 @@ export default function AcademicYears() {
   const [endDate, setEndDate] = useState("");
   const [editId, setEditId] = useState(null);
 
-  const handleAddYear = () => {
+  const fetchAcademicYears = async () => {
+  try {
+
+    const response =
+      await getAcademicYears();
+
+    setAcademicYears(
+      response.data.data
+    );
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+useEffect(() => {
+  fetchAcademicYears();
+}, []);
+
+  const handleAddYear = async () => {
     if (!startDate || !endDate) {
       alert("Please select both dates");
       return;
@@ -28,23 +46,26 @@ export default function AcademicYears() {
     const academicYearName = `${startYear}-${String(endYear).slice(-2)}`;
 
     if (editId) {
-      setAcademicYears(
-        academicYears.map((year) =>
-          year.id === editId
-            ? { ...year, name: academicYearName, startDate, endDate }
-            : year
-        )
-      );
-    } else {
-      const newYear = {
-        id: Date.now(),
-        name: academicYearName,
-        startDate,
-        endDate,
-      };
-      setAcademicYears([...academicYears, newYear]);
-    }
 
+  await updateAcademicYear(
+    editId,
+    {
+      name: academicYearName,
+      startDate,
+      endDate,
+    }
+  );
+
+} else {
+
+  await createAcademicYear({
+    name: academicYearName,
+    startDate,
+    endDate,
+  });
+
+}
+    await fetchAcademicYears();
     setCurrentYear(academicYearName);
     setEditId(null);
     setStartDate("");
@@ -52,17 +73,35 @@ export default function AcademicYears() {
     setShowModal(false);
   };
 
-  const handleDelete = (id) => {
-    const updated = academicYears.filter((year) => year.id !== id);
-    setAcademicYears(updated);
-  };
+  const handleDelete = async (id) => {
 
-  const handleEdit = (year) => {
-    setEditId(year.id);
-    setStartDate(year.startDate);
-    setEndDate(year.endDate);
-    setShowModal(true);
-  };
+  try {
+
+    await deleteAcademicYear(id);
+
+    fetchAcademicYears();
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+};
+
+ const handleEdit = (year) => {
+  setEditId(year._id);
+
+  setStartDate(
+    year.startDate.split("T")[0]
+  );
+
+  setEndDate(
+    year.endDate.split("T")[0]
+  );
+
+  setShowModal(true);
+};
 
   return (
     <div className="bg-white p-4 max-w-6xl mx-auto">
@@ -99,7 +138,7 @@ export default function AcademicYears() {
               className="bg-gray-100 rounded-lg px-3 py-2 text-sm flex-1 outline-none"
             >
               {academicYears.map((year) => (
-                <option key={year.id} value={year.name}>
+                <option key={year._id} value={year.name}>
                   {year.name}
                 </option>
               ))}
@@ -131,7 +170,7 @@ export default function AcademicYears() {
 
         {academicYears.map((year, index) => (
           <div
-            key={year.id}
+            key={year._id}
             className="grid grid-cols-4 p-4 items-center"
           >
             <div>{index + 1}</div>
@@ -139,7 +178,9 @@ export default function AcademicYears() {
             <div>{year.name}</div>
 
             <div>
-              {year.startDate} → {year.endDate}
+              <div>
+           {year.startDate?.split("T")[0]} → {year.endDate?.split("T")[0]}
+              </div>
             </div>
 
             <div className="flex justify-end gap-4">
@@ -151,7 +192,7 @@ export default function AcademicYears() {
               </button>
 
               <button
-                onClick={() => handleDelete(year.id)}
+                onClick={() => handleDelete(year._id)}
                 className="text-red-500 hover:text-red-700"
               >
                 <FaTrash />

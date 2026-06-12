@@ -10,7 +10,7 @@ import Academicyear from "../models/AcademicYear.js";
         }=req.body;
 
         const year=
-        Academicyear.create({
+       await Academicyear.create({
             name,
             startDate,
             endDate
@@ -33,7 +33,7 @@ import Academicyear from "../models/AcademicYear.js";
 
  export const getAcademicYear=async(req,res)=>{
     try{
-        const years=Academicyear.find().sort({cratedAt:-1});
+        const years= await Academicyear.find().sort({cratedAt:-1});
 
         res.status(200).json({
             success:true,
@@ -61,7 +61,7 @@ import Academicyear from "../models/AcademicYear.js";
             id,
             req.body,
             {
-                new:true,
+                returnDocument: "after",
                 runValidators:true,
             }
         );
