@@ -74,6 +74,13 @@ export const loginUser = async (req, res) => {
       });
     }
 
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Account inactive",
+      });
+    }
+
     const isMatch = await bcrypt.compare(
       password,
       user.password
@@ -99,6 +106,7 @@ export const loginUser = async (req, res) => {
 
     res.status(200).json({
       success: true,
+      message: "Login successful",
       token,
       user,
     });

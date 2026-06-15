@@ -1,117 +1,239 @@
 import Academicyear from "../models/AcademicYear.js";
 
- export const createAcademicYear=
- async(req,res)=>{
-    try{
-        const{
-            name,
-            startDate,
-            endDate
-        }=req.body;
+// Create Academic Year
+export const createAcademicYear = async (
+  req,
+  res
+) => {
+  try {
 
-        const year=
-       await Academicyear.create({
-            name,
-            startDate,
-            endDate
-        });
-        res.status(200).json({
-            success:true,
-            data:year,
-        });
-    }
-    catch(error)
-    {
-        console.log(error);
-        res.status(500).json({
-            success:false,
-            message:"Server error",
-        });
-    }
-     
- }; 
+    const {
+      name,
+      startDate,
+      endDate,
+    } = req.body;
 
- export const getAcademicYear=async(req,res)=>{
-    try{
-        const years= await Academicyear.find().sort({cratedAt:-1});
-
-        res.status(200).json({
-            success:true,
-            count:years.length,
-            data:years,
-        });
-    }
-    catch(error)
-    {
-        console.log(error);
-
-        res.status(500).json({
-            success:false,
-            message:"Server error"
-
-        });
-    }
- }
-
- export const updateAcademicYear=async(req,res)=>{
-    try{
-        const {id}=req.params;
-
-        const updatedYear=await Academicyear.findByIdAndUpdate(
-            id,
-            req.body,
-            {
-                returnDocument: "after",
-                runValidators:true,
-            }
-        );
-        if (!updatedYear) {
-      return res.status(404).json({
+    // Validation
+    if (
+      !name ||
+      !startDate ||
+      !endDate
+    ) {
+      return res.status(400).json({
         success: false,
-        message: "Academic Year not found",
+        message:
+          "All fields are required",
       });
     }
 
-    res.status(200).json({
+    // Duplicate Check
+    const existingYear =
+      await Academicyear.findOne({
+        name,
+        isActive: true,
+      });
+
+    if (existingYear) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Academic Year already exists",
+      });
+    }
+
+    // Date Validation
+    if (
+      new Date(startDate) >=
+      new Date(endDate)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Start Date must be before End Date",
+      });
+    }
+
+    const year =
+      await Academicyear.create({
+        name,
+        startDate,
+        endDate,
+      });
+
+    res.status(201).json({
       success: true,
-      data: updatedYear,
+      message:
+        "Academic Year created successfully",
+      data: year,
     });
-}catch (error) {
+
+  } catch (error) {
 
     console.log(error);
 
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: error.message,
     });
 
   }
- };
+};
 
-export const deleteAcademicYear=async(req,res)=>
-{
-    try{
-        const {id}=req.params;
+// Get All Academic Years
+export const getAcademicYear = async (
+  req,
+  res
+) => {
+  try {
 
-        const deletedAcademicYear=await Academicyear.findByIdAndDelete(id);
+    const years =
+      await Academicyear.find({
+        isActive: true,
+      }).sort({
+        createdAt: -1,
+      });
 
-        if(!deleteAcademicYear)
-        {
-            res.status(400).json({
-                success:false,
-                message:"Academic year not deleted",
-            }
-            );
-        }
-        res.status(200).json({
-            success:true,
-            message:"Academic year deleted sucessfully",
-        })
-    }catch(error)
-    {
-        res.status(500).json({
-            success:false,
-            message:"Server error",
-        });
+    res.status(200).json({
+      success: true,
+      count: years.length,
+      data: years,
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+
+// Update Academic Year
+export const updateAcademicYear = async (
+  req,
+  res
+) => {
+  try {
+
+    const { id } = req.params;
+    const {
+      name,
+      startDate,
+      endDate,
+    } = req.body;
+
+    if (
+      startDate &&
+      endDate &&
+      new Date(startDate) >=
+      new Date(endDate)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Start Date must be before End Date",
+      });
     }
+
+    if (name) {
+      const existingYear =
+        await Academicyear.findOne({
+          _id: { $ne: id },
+          name,
+          isActive: true,
+        });
+
+      if (existingYear) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Academic Year already exists",
+        });
+      }
+    }
+
+    const updatedYear =
+      await Academicyear.findByIdAndUpdate(
+        id,
+        req.body,
+        {
+          returnDocument: "after",
+          runValidators: true,
+        }
+      );
+
+    if (!updatedYear) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Academic Year not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message:
+        "Academic Year updated successfully",
+      data: updatedYear,
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+
+// Soft Delete Academic Year
+export const deleteAcademicYear = async (
+  req,
+  res
+) => {
+  try {
+
+    const { id } = req.params;
+
+    const deletedAcademicYear =
+      await Academicyear.findByIdAndUpdate(
+        id,
+        {
+          isActive: false,
+        },
+        {
+          returnDocument: "after",
+        }
+      );
+
+    if (!deletedAcademicYear) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Academic Year not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message:
+        "Academic Year deleted successfully",
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
 };

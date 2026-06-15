@@ -126,7 +126,9 @@ function LoginCard({
   email,
   setEmail,
   password,
-  setPassword
+  setPassword,
+  error,
+  successMessage
 })  {
   return (
     <form
@@ -171,6 +173,18 @@ function LoginCard({
           }
         />
       </div>
+
+      {error && (
+        <div className="mt-[24px] rounded-[14px] bg-red-100 px-4 py-3 text-[16px] font-semibold text-red-600">
+          {error}
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="mt-[24px] rounded-[14px] bg-green-100 px-4 py-3 text-[16px] font-semibold text-green-700">
+          {successMessage}
+        </div>
+      )}
 
       <div className="mt-[29px] flex items-center justify-between text-[20px] font-medium leading-none">
         <label className="flex items-center gap-[13px] text-[#858BA9]">
@@ -225,8 +239,12 @@ export default function Login() {
   const navigate = useNavigate()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const handleSubmit = async(event) => {
     event.preventDefault()
+    setError("");
+    setSuccessMessage("");
     
   try {
    const response = await loginUser({
@@ -239,11 +257,21 @@ export default function Login() {
       response.token
     );
 
-    navigate("/Dashboard");
+    setSuccessMessage(
+      response.message
+    );
+
+    setTimeout(() => {
+      navigate("/Dashboard");
+    }, 1000);
 
   } catch (error) {
 
     console.log(error);
+
+    setError(
+      error?.response?.data?.message
+    );
 
   }
   }
@@ -293,6 +321,8 @@ export default function Login() {
   setEmail={setEmail}
   password={password}
   setPassword={setPassword}
+  error={error}
+  successMessage={successMessage}
 />
         </div>
       </section>

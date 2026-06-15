@@ -24,13 +24,14 @@ import Departments from "../pages/Setting/Masters-pages/Departments";
 import Designations from "../pages/Setting/Masters-pages/Designations";
 import Categories from "../pages/Setting/Masters-pages/Categories";
 import AcademicCalendar from "../pages/Setting/Masters-pages/AcademicCalendar";
+import ProtectedRoute from "../components/Protectedroutes";
 
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/Login" replace />} />
       <Route path="/Login" element={<Login />} />
-
+      <Route element={<ProtectedRoute />}>
       <Route element={<DashboardLayout />}>
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/Student" element={<Student />} />
@@ -57,7 +58,7 @@ function AppRoutes() {
         </Route>
         <Route path="/Admission/New-Admission" element={<NewAdmission />} />
       </Route>
-
+      </Route>
       <Route path="/admission" element={<Navigate to="/Admission/New-Admission" replace />} />
       <Route path="/fees" element={<Navigate to="/Fees" replace />} />
       <Route path="/attendance" element={<Navigate to="/Attendence" replace />} />

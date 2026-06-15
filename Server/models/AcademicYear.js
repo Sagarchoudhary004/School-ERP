@@ -5,7 +5,7 @@ const academicYearSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
+      trim:true
     },
 
     startDate: {
@@ -22,9 +22,23 @@ const academicYearSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isActive: {
+    type: Boolean,
+    default: true,
+  },
   },
   {
     timestamps: true,
+  }
+);
+
+academicYearSchema.index(
+  { name: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      isActive: true,
+    },
   }
 );
 

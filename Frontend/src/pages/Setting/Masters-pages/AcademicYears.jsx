@@ -16,7 +16,8 @@ export default function AcademicYears() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [editId, setEditId] = useState(null);
-
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const fetchAcademicYears = async () => {
   try {
 
@@ -28,84 +29,188 @@ export default function AcademicYears() {
     );
 
   } catch (error) {
-    console.log(error);
-  }
+
+  console.log(error);
+
+  setError(
+    error?.response?.data?.message ||
+    "Failed to load Academic Years"
+  );
+
+}
 };
 useEffect(() => {
   fetchAcademicYears();
 }, []);
 
   const handleAddYear = async () => {
-    if (!startDate || !endDate) {
-      alert("Please select both dates");
-      return;
-    }
-
-    const startYear = new Date(startDate).getFullYear();
-    const endYear = new Date(endDate).getFullYear();
-    const academicYearName = `${startYear}-${String(endYear).slice(-2)}`;
-
-    if (editId) {
-
-  await updateAcademicYear(
-    editId,
-    {
-      name: academicYearName,
-      startDate,
-      endDate,
-    }
-  );
-
-} else {
-
-  await createAcademicYear({
-    name: academicYearName,
-    startDate,
-    endDate,
-  });
-
-}
-    await fetchAcademicYears();
-    setCurrentYear(academicYearName);
-    setEditId(null);
-    setStartDate("");
-    setEndDate("");
-    setShowModal(false);
-  };
-
-  const handleDelete = async (id) => {
 
   try {
 
-    await deleteAcademicYear(id);
+    setError("");
+    setSuccessMessage("");
 
-    fetchAcademicYears();
+    if (!startDate || !endDate) {
+
+      setError(
+        "Please select both dates"
+      );
+
+      return;
+    }
+
+    const startYear =
+      new Date(startDate).getFullYear();
+
+    const endYear =
+      new Date(endDate).getFullYear();
+
+    const academicYearName =
+      `${startYear}-${String(endYear).slice(-2)}`;
+
+    if (editId) {
+
+      const response =
+        await updateAcademicYear(
+        editId,
+        {
+          name: academicYearName,
+          startDate,
+          endDate,
+        }
+      );
+
+      setSuccessMessage(
+        response.data.message
+      );
+
+    } else {
+
+      const response =
+        await createAcademicYear({
+        name: academicYearName,
+        startDate,
+        endDate,
+      });
+
+      setSuccessMessage(
+        response.data.message
+      );
+
+    }
+
+    await fetchAcademicYears();
+
+    setCurrentYear(
+      academicYearName
+    );
+
+    setEditId(null);
+
+    setStartDate("");
+
+    setEndDate("");
+
+    setTimeout(() => {
+      setShowModal(false);
+      setSuccessMessage("");
+    }, 1500);
 
   } catch (error) {
 
     console.log(error);
 
+    setError(
+      error?.response?.data?.message ||
+      "Something went wrong"
+    );
+
   }
 
 };
+const handleDelete = async (id) => {
 
- const handleEdit = (year) => {
-  setEditId(year._id);
+  try {
 
-  setStartDate(
-    year.startDate.split("T")[0]
-  );
+    setError("");
+    setSuccessMessage("");
 
-  setEndDate(
-    year.endDate.split("T")[0]
-  );
+    const response =
+      await deleteAcademicYear(id);
 
-  setShowModal(true);
+    await fetchAcademicYears();
+
+    setSuccessMessage(
+      response.data.message
+    );
+
+  } catch (error) {
+
+    console.log(error);
+
+    setError(
+      error?.response?.data?.message ||
+      "Failed to delete Academic Year"
+    );
+
+  }
+
+};
+const handleEdit = (year) => {
+
+  try {
+
+    setError("");
+    setSuccessMessage("");
+
+    if (!year) {
+
+      setError(
+        "Academic Year data not found"
+      );
+
+      return;
+    }
+
+    setEditId(year._id);
+
+    setStartDate(
+      year.startDate?.split("T")[0] || ""
+    );
+
+    setEndDate(
+      year.endDate?.split("T")[0] || ""
+    );
+
+    setShowModal(true);
+
+  } catch (error) {
+
+    console.log(error);
+
+    setError(
+      "Failed to load Academic Year data"
+    );
+
+  }
+
 };
 
   return (
     <div className="bg-white p-4 max-w-6xl mx-auto">
       <h2 className="text-xl font-semibold mb-1">Academic Years</h2>
+
+      {error && !showModal && (
+        <div className="mb-4 p-3 rounded-lg bg-red-100 text-red-600">
+          {error}
+        </div>
+      )}
+
+      {successMessage && !showModal && (
+        <div className="mb-4 p-3 rounded-lg bg-green-100 text-green-700">
+          {successMessage}
+        </div>
+      )}
 
       {/* Top Section */}
       <div className="grid lg:grid-cols-2 gap-3 mb-4">
@@ -146,11 +251,18 @@ useEffect(() => {
 
             <button
               onClick={() => {
-                setEditId(null);
-                setStartDate("");
-                setEndDate("");
-                setShowModal(true);
-              }}
+               setEditId(null);
+
+               setStartDate("");
+
+               setEndDate("");
+
+                setError("");
+
+               setSuccessMessage("");
+
+                 setShowModal(true);
+             }}
               className="bg-blue-900 text-white px-6 py-2 rounded-lg"
             >
               + Add
@@ -237,6 +349,17 @@ useEffect(() => {
                 />
               </div>
             </div>
+            {error && (
+           <div className="mb-4 p-3 rounded-lg bg-red-100 text-red-600">
+            {error}
+           </div>
+            )}
+
+           {successMessage && (
+         <div className="mb-4 p-3 rounded-lg bg-green-100 text-green-700">
+          {successMessage}
+         </div>
+          )}
 
             <div className="flex justify-end gap-3">
               <button

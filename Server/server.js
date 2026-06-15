@@ -4,6 +4,13 @@ import authRoutes from "./routes/authRoutes.js";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import academicyearRoutes from"./routes/academicYearRoutes.js"
+import examTypeRoutes from "./routes/examTypeRoutes.js";
+import classSectionRoutes from "./routes/classSectionRoutes.js";
+import subjectRoutes from "./routes/subjectRoutes.js";
+import departmentRoutes from "./routes/departmentRoutes.js";
+import designationRoutes from "./routes/designationRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import academicCalendarRoutes from "./routes/academicCalendarRoutes.js";
 
 dotenv.config();
 
@@ -24,6 +31,13 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/academic-year",academicyearRoutes);
+app.use("/api/exam-types", examTypeRoutes);
+app.use("/api/class-sections", classSectionRoutes);
+app.use("/api/subjects", subjectRoutes);
+app.use("/api/departments", departmentRoutes);
+app.use("/api/designations", designationRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/academic-calendar", academicCalendarRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

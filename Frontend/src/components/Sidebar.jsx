@@ -11,12 +11,14 @@ import {
   FaCog,
   FaChevronDown,
   FaChevronUp,
+  FaSignOutAlt,
 } from "react-icons/fa";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation,useNavigate} from "react-router-dom";
 
 import logo from "../assets/logo.png";
 
 const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
+  const navigate = useNavigate();
   const menu = [
     { icon: <FaHome />, name: "Dashboard", path: "/Dashboard" },
     { icon: <FaUserGraduate />, name: "Students", path: "/Student" },
@@ -38,7 +40,10 @@ const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
       ],
     },
   ];
-
+   const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/Login");
+  };
   return (
     <>
       <div className="hidden md:flex md:w-[280px] md:fixed md:left-0 md:top-0 md:h-screen md:min-h-screen bg-[#06123f] text-white p-5 flex-col overflow-y-auto">
@@ -62,6 +67,7 @@ const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
 };
 
 const SidebarContent = ({ menu }) => {
+  const navigate = useNavigate();
   const location = useLocation();
   const activeDropdownIndex = menu.findIndex((item) =>
     item.subRoutes?.some((sub) => sub.path === location.pathname)
@@ -69,12 +75,15 @@ const SidebarContent = ({ menu }) => {
   const [openDropdown, setOpenDropdown] = useState(
     activeDropdownIndex === -1 ? null : activeDropdownIndex
   );
-
   useEffect(() => {
     if (activeDropdownIndex !== -1) {
       setOpenDropdown(activeDropdownIndex);
     }
   }, [activeDropdownIndex]);
+  const handleLogout = () => {
+  localStorage.removeItem("token");
+  navigate("/Login");
+};
 
   return (
     <>
@@ -155,6 +164,13 @@ const SidebarContent = ({ menu }) => {
           <span className="text-sm text-gray-300">Active Session</span>
         </div>
       </div>
+      <button
+  onClick={handleLogout}
+  className="w-full mt-3 flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-red-600 hover:bg-red-700 transition-all"
+>
+  <FaSignOutAlt />
+  <span>Logout</span>
+</button>
     </>
   );
 };

@@ -1,19 +1,46 @@
 import axios from "axios";
 
 const API =
- "http://localhost:5000/api/academic-year";
+  "http://localhost:5000/api/academic-year";
+
+const getAuthConfig = () => {
+
+  const token =
+    localStorage.getItem("token");
+
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+};
 
 export const getAcademicYears = () =>
- axios.get(API);
+  axios.get(
+    API,
+    getAuthConfig()
+  );
 
 export const createAcademicYear = (data) =>
- axios.post(`${API}/create`, data);
+  axios.post(
+    `${API}/create`,
+    data,
+    getAuthConfig()
+  );
 
 export const updateAcademicYear = (
- id,
- data
+  id,
+  data
 ) =>
- axios.put(`${API}/${id}`, data);
+  axios.put(
+    `${API}/${id}`,
+    data,
+    getAuthConfig()
+  );
 
 export const deleteAcademicYear = (id) =>
- axios.delete(`${API}/${id}`);
+  axios.delete(
+    `${API}/${id}`,
+    getAuthConfig()
+  );
