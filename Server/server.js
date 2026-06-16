@@ -1,9 +1,12 @@
 import cors from "cors";
-import express from "express";
-import authRoutes from "./routes/authRoutes.js";
 import dotenv from "dotenv";
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
-import academicyearRoutes from"./routes/academicYearRoutes.js"
+import studentRoutes from "./routes/studentRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import academicYearRoutes from "./routes/academicYearRoutes.js";
 import examTypeRoutes from "./routes/examTypeRoutes.js";
 import classSectionRoutes from "./routes/classSectionRoutes.js";
 import subjectRoutes from "./routes/subjectRoutes.js";
@@ -11,26 +14,27 @@ import departmentRoutes from "./routes/departmentRoutes.js";
 import designationRoutes from "./routes/designationRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import academicCalendarRoutes from "./routes/academicCalendarRoutes.js";
+import guardianRoutes from "./routes/guardianRoutes.js";
 
 dotenv.config();
-
 connectDB();
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true,
   })
 );
 
-// Middleware
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/academic-year",academicyearRoutes);
+app.use("/api/academic-year", academicYearRoutes);
 app.use("/api/exam-types", examTypeRoutes);
 app.use("/api/class-sections", classSectionRoutes);
 app.use("/api/subjects", subjectRoutes);
@@ -38,10 +42,22 @@ app.use("/api/departments", departmentRoutes);
 app.use("/api/designations", designationRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/academic-calendar", academicCalendarRoutes);
+app.use("/api/guardians", guardianRoutes);
+app.use("/api/students", studentRoutes);
 
-// Test Route
 app.get("/", (req, res) => {
   res.send("School CRM Backend Running");
+});
+
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+app.use((error, req, res, next) => {
+  console.error(error);
+  res.status(error.statusCode || 500).json({
+    message: error.message || "Internal server error",
+  });
 });
 
 const PORT = process.env.PORT || 5000;
