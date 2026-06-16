@@ -15,6 +15,7 @@ import designationRoutes from "./routes/designationRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import academicCalendarRoutes from "./routes/academicCalendarRoutes.js";
 import guardianRoutes from "./routes/guardianRoutes.js";
+import teacherRoutes from "./routes/teacherRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -44,6 +45,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/academic-calendar", academicCalendarRoutes);
 app.use("/api/guardians", guardianRoutes);
 app.use("/api/students", studentRoutes);
+app.use("/api/teachers", teacherRoutes);
 
 app.get("/", (req, res) => {
   res.send("School CRM Backend Running");

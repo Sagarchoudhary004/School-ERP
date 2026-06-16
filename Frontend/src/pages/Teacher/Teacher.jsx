@@ -5,7 +5,24 @@ const Teacher = () => {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({ name: "", subject: "", email: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    subject: "",
+    email: "",
+    employeeCode: "",
+    phone: "",
+    dob: "",
+    gender: "",
+    joinDate: "",
+    qualification: "",
+    experience: "",
+    bankName: "",
+    accountNumber: "",
+    ifscCode: "",
+    monthlySalary: "",
+    panNumber: "",
+    epfNumber: "",
+  });
 
   // Fetch teachers from backend on component mount
   useEffect(() => {
@@ -28,7 +45,7 @@ const Teacher = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.subject) return;
+    if (!formData.name || !formData.subject || !formData.employeeCode || !formData.phone) return;
     
     try {
       const newTeacher = {
@@ -41,7 +58,24 @@ const Teacher = () => {
       
       // Update local state with the saved teacher from backend
       setTeachers([savedTeacher, ...teachers]);
-      setFormData({ name: "", subject: "", email: "" });
+      setFormData({
+        name: "",
+        subject: "",
+        email: "",
+        employeeCode: "",
+        phone: "",
+        dob: "",
+        gender: "",
+        joinDate: "",
+        qualification: "",
+        experience: "",
+        bankName: "",
+        accountNumber: "",
+        ifscCode: "",
+        monthlySalary: "",
+        panNumber: "",
+        epfNumber: "",
+      });
       setShowForm(false);
     } catch (error) {
       alert("Failed to save teacher. Please try again.");
@@ -66,11 +100,47 @@ const Teacher = () => {
       {showForm && (
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
           <h2 className="text-lg font-semibold mb-4 text-slate-700">Register New Teacher</h2>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <input name="name" value={formData.name} onChange={handleInputChange} placeholder="Full Name" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" required />
-            <input name="subject" value={formData.subject} onChange={handleInputChange} placeholder="Subject" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" required />
-            <input name="email" value={formData.email} onChange={handleInputChange} type="email" placeholder="Email Address" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" required />
-            <button type="submit" className="md:col-span-3 bg-emerald-600 text-white p-3 rounded-lg font-semibold hover:bg-emerald-700 transition shadow-sm">Save Teacher</button>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <input name="name" value={formData.name} onChange={handleInputChange} placeholder="Full Name" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" required />
+              <input name="employeeCode" value={formData.employeeCode} onChange={handleInputChange} placeholder="Employee Code *" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" required />
+              <input name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone Number *" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" required />
+              <input name="email" value={formData.email} onChange={handleInputChange} type="email" placeholder="Email Address" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" required />
+              <input name="subject" value={formData.subject} onChange={handleInputChange} placeholder="Subject" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" required />
+              <select name="gender" value={formData.gender} onChange={handleInputChange} className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500">
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+              <div className="flex flex-col"><label className="text-[10px] uppercase font-bold text-slate-400 ml-1 mb-1">Date of Birth</label><input name="dob" type="date" value={formData.dob} onChange={handleInputChange} className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" /></div>
+              <div className="flex flex-col"><label className="text-[10px] uppercase font-bold text-slate-400 ml-1 mb-1">Join Date</label><input name="joinDate" type="date" value={formData.joinDate} onChange={handleInputChange} className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" /></div>
+              <input name="qualification" value={formData.qualification} onChange={handleInputChange} placeholder="Qualification" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" />
+              <input name="experience" value={formData.experience} onChange={handleInputChange} placeholder="Experience (Years)" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" />
+            </div>
+
+            <div className="border-t border-slate-100 pt-4">
+              <h3 className="font-semibold text-slate-700 mb-3">Bank & Salary Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input name="bankName" value={formData.bankName} onChange={handleInputChange} placeholder="Bank Name" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" />
+                <input name="accountNumber" value={formData.accountNumber} onChange={handleInputChange} placeholder="Account Number" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" />
+                <input name="ifscCode" value={formData.ifscCode} onChange={handleInputChange} placeholder="IFSC Code" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" />
+                <input name="monthlySalary" type="number" value={formData.monthlySalary} onChange={handleInputChange} placeholder="Monthly Salary" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" />
+                <input name="panNumber" value={formData.panNumber} onChange={handleInputChange} placeholder="PAN Number" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" />
+                <input name="epfNumber" value={formData.epfNumber} onChange={handleInputChange} placeholder="EPF Number" className="border border-slate-200 rounded-lg p-3 outline-none focus:border-blue-500" />
+              </div>
+            </div>
+
+            <div className="border-t border-slate-100 pt-4">
+              <h3 className="font-semibold text-slate-700 mb-3">Upload Documents</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-1"><label className="text-sm text-slate-500 block">Resume</label><input type="file" className="text-xs w-full" /></div>
+                <div className="space-y-1"><label className="text-sm text-slate-500 block">ID Proof</label><input type="file" className="text-xs w-full" /></div>
+                <div className="space-y-1"><label className="text-sm text-slate-500 block">Certificates</label><input type="file" className="text-xs w-full" /></div>
+              </div>
+            </div>
+
+            <button type="submit" className="w-full bg-emerald-600 text-white p-3 rounded-xl font-semibold hover:bg-emerald-700 transition-all shadow-md">Save Teacher</button>
           </form>
         </div>
       )}
