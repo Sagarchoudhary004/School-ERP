@@ -17,6 +17,7 @@ import academicCalendarRoutes from "./routes/academicCalendarRoutes.js";
 import guardianRoutes from "./routes/guardianRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
 import timetableRoutes from "./routes/timetableRoutes.js";
+import schoolProfileRoutes from "./routes/schoolProfileRoutes.js";
 
 import authMiddleware from "./middleware/authMiddleware.js";
 
@@ -31,12 +32,13 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true,
-  })
+  }),
 );
+
 
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
+app.use("/api/school-profile", schoolProfileRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/academic-year", academicYearRoutes);
 app.use("/api/exam-types", examTypeRoutes);
@@ -50,8 +52,6 @@ app.use("/api/guardians", guardianRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/timetables", timetableRoutes);
-
-
 
 app.get("/", (req, res) => {
   res.send("School CRM Backend Running");

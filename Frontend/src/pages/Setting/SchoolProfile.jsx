@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const SchoolProfile = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,8 @@ const SchoolProfile = () => {
     adminHead: "",
   });
 
+  const [loading, setLoading] = useState(true);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -24,9 +27,66 @@ const SchoolProfile = () => {
     });
   };
 
-  const handleSubmit = () => {
-    console.log(formData);
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.get(
+        "http://localhost:5000/api/school-profile",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data && Object.keys(response.data).length > 0) {
+        setFormData((prev) => ({
+          ...prev,
+          ...response.data,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching profile =>", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.post(
+        "http://localhost:5000/api/school-profile",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("School Profile Saved Successfully");
+
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+      alert("Error Saving School Profile");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-8 text-center text-slate-500">
+        Loading profile...
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
