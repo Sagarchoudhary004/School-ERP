@@ -9,11 +9,11 @@ import Attendence from "../pages/Attendence/Attendence";
 import Timetable from "../pages/Timetable/Timetable";
 import FeeandFinance from "../pages/Fees/FeeandFinance";
 import Exams from "../pages/Exams/Exams";
-import Transport from "../pages/Transport/Transport";
+// import Transport from "../pages/Transport/Transport";
 import NewAdmission from "../pages/Admission/NewAdmission";
 import Setting from "../pages/Setting/Setting";
-import AuditLogs from "../pages/Setting/AuditLogs";
-import Integrations from "../pages/Setting/Integrations";
+// import AuditLogs from "../pages/Setting/AuditLogs";
+// import Integrations from "../pages/Setting/Integrations";
 import SchoolProfile from "../pages/Setting/SchoolProfile";
 import Masters from "../pages/Setting/Masters-pages/Masters";
 import AcademicYears from "../pages/Setting/Masters-pages/AcademicYears";
@@ -40,10 +40,9 @@ function AppRoutes() {
         <Route path="/Timetable" element={<Timetable />} />
         <Route path="/Fees" element={<FeeandFinance />} />
         <Route path="/Exams" element={<Exams />} />
-        <Route path="/Transport" element={<Transport />} />
+        {/* <Route path="/Transport" element={<Transport />} /> */}
         <Route path="/Settings" element={<Setting />} />
-        <Route path="/Settings/Audit-Logs" element={<AuditLogs />} />
-        <Route path="/Settings/Integration" element={<Integrations />} />
+       
         <Route path="/Settings/School-Profile" element={<SchoolProfile />} />
         <Route path="/Settings/Masters" element={<Masters />}>
           <Route index element={<Navigate to="Academic-Years" replace />} />

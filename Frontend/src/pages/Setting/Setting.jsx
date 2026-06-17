@@ -2,8 +2,8 @@ import React from 'react'
 import { useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
-import AuditLogs from './AuditLogs';
-import Integrations from './Integrations';
+// import AuditLogs from './AuditLogs';
+// import Integrations from './Integrations';
 import Masters from './Masters-pages/Masters';
 import SchoolProfile from './SchoolProfile';
 
