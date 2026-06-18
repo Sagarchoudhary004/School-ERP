@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { getStudents } from "../../services/studentService";
+import { getTeachers } from "../../services/teacherService";
 import { saveAttendance, getAttendance } from "../../services/attendanceService";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Attendence = () => {
-  const [students, setStudents] = useState([]);
+const TeacherAttendance = () => {
+  const [teachers, setTeachers] = useState([]);
   const [attendance, setAttendance] = useState({});
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchStudentsAndAttendance();
+    fetchTeachersAndAttendance();
   }, [date]);
 
-  const fetchStudentsAndAttendance = async () => {
+  const fetchTeachersAndAttendance = async () => {
     setLoading(true);
     try {
-      const studentData = await getStudents();
-      setStudents(studentData);
+      const teacherData = await getTeachers();
+      setTeachers(teacherData);
 
-      const response = await getAttendance(date, "Student");
+      const response = await getAttendance(date, "Teacher");
       const records = response.data || [];
       
       const attendanceMap = {};
       records.forEach(record => {
-        if (record.student && record.student._id) {
-          attendanceMap[record.student._id] = record.status;
+        if (record.teacher && record.teacher._id) {
+          attendanceMap[record.teacher._id] = record.status;
         }
       });
       setAttendance(attendanceMap);
@@ -38,14 +38,14 @@ const Attendence = () => {
     }
   };
 
-  const handleStatusChange = (studentId, status) => {
-    setAttendance(prev => ({ ...prev, [studentId]: status }));
+  const handleStatusChange = (teacherId, status) => {
+    setAttendance(prev => ({ ...prev, [teacherId]: status }));
   };
 
   const handleSave = async () => {
     try {
-      const attendanceData = Object.entries(attendance).map(([studentId, status]) => ({
-        studentId,
+      const attendanceData = Object.entries(attendance).map(([teacherId, status]) => ({
+        teacherId,
         status,
       }));
 
@@ -56,7 +56,7 @@ const Attendence = () => {
 
       await saveAttendance({
         date,
-        userType: "Student",
+        userType: "Teacher",
         attendanceData,
       });
 
@@ -71,7 +71,7 @@ const Attendence = () => {
     <div className="bg-white rounded-xl shadow p-6">
       <ToastContainer />
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Student Attendance</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Teacher Attendance</h1>
         <div className="flex gap-4">
           <input
             type="date"
@@ -95,24 +95,24 @@ const Attendence = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-100 text-gray-700">
-                <th className="p-3 border-b">Roll No</th>
+                <th className="p-3 border-b">Employee Code</th>
                 <th className="p-3 border-b">Name</th>
-                <th className="p-3 border-b">Class/Section</th>
+                <th className="p-3 border-b">Subject</th>
                 <th className="p-3 border-b text-center">Status</th>
               </tr>
             </thead>
             <tbody>
-              {students.map((student) => (
-                <tr key={student._id} className="border-b hover:bg-gray-50">
-                  <td className="p-3">{student.rollNumber || "-"}</td>
-                  <td className="p-3 font-medium">{student.firstName} {student.lastName}</td>
-                  <td className="p-3">{student.studentClass} - {student.section}</td>
+              {teachers.map((teacher) => (
+                <tr key={teacher._id} className="border-b hover:bg-gray-50">
+                  <td className="p-3">{teacher.employeeCode || "-"}</td>
+                  <td className="p-3 font-medium">{teacher.name}</td>
+                  <td className="p-3">{teacher.subject || "-"}</td>
                   <td className="p-3">
                     <div className="flex justify-center gap-2">
                       <button
-                        onClick={() => handleStatusChange(student._id, "Present")}
+                        onClick={() => handleStatusChange(teacher._id, "Present")}
                         className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          attendance[student._id] === "Present"
+                          attendance[teacher._id] === "Present"
                             ? "bg-green-100 text-green-700 border border-green-300"
                             : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                         }`}
@@ -120,9 +120,9 @@ const Attendence = () => {
                         P
                       </button>
                       <button
-                        onClick={() => handleStatusChange(student._id, "Absent")}
+                        onClick={() => handleStatusChange(teacher._id, "Absent")}
                         className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          attendance[student._id] === "Absent"
+                          attendance[teacher._id] === "Absent"
                             ? "bg-red-100 text-red-700 border border-red-300"
                             : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                         }`}
@@ -130,9 +130,9 @@ const Attendence = () => {
                         A
                       </button>
                       <button
-                        onClick={() => handleStatusChange(student._id, "Leave")}
+                        onClick={() => handleStatusChange(teacher._id, "Leave")}
                         className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          attendance[student._id] === "Leave"
+                          attendance[teacher._id] === "Leave"
                             ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
                             : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                         }`}
@@ -143,10 +143,10 @@ const Attendence = () => {
                   </td>
                 </tr>
               ))}
-              {students.length === 0 && (
+              {teachers.length === 0 && (
                 <tr>
                   <td colSpan="4" className="text-center p-4 text-gray-500">
-                    No students found.
+                    No teachers found.
                   </td>
                 </tr>
               )}
@@ -158,4 +158,4 @@ const Attendence = () => {
   );
 };
 
-export default Attendence;
+export default TeacherAttendance;

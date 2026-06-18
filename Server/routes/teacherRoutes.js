@@ -1,4 +1,5 @@
 import express from "express";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 import {
   createTeacher,
@@ -9,6 +10,8 @@ import {
 } from "../controllers/teacherController.js";
 
 const router = express.Router();
+
+router.use(authMiddleware);
 
 router.post("/", createTeacher);
 

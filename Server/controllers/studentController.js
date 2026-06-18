@@ -1,4 +1,5 @@
 import Student from "../models/Student.js";
+import ClassSection from "../models/ClassSection.js";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^[0-9]{10,15}$/;
@@ -100,6 +101,28 @@ export const getStudents = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(limit);
     return res.status(200).json(students);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getStudentsByClassSection = async (req, res) => {
+  try {
+    const classSection = await ClassSection.findById(req.params.classSectionId);
+
+    if (!classSection) {
+      return res.status(404).json({ message: "Class section not found" });
+    }
+
+    const students = await Student.find({
+      studentClass: classSection.className,
+      section: classSection.sectionName,
+    }).sort({ rollNumber: 1, firstName: 1 });
+
+    return res.status(200).json({
+      success: true,
+      data: students,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

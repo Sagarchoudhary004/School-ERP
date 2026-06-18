@@ -1,14 +1,18 @@
 import express from "express";
 import upload from "../middlewares/upload.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 import {
   createStudent,
   deleteStudent,
   getStudentById,
+  getStudentsByClassSection,
   getStudents,
   updateStudent,
 } from "../controllers/studentController.js";
 
 const router = express.Router();
+
+router.use(authMiddleware);
 
 router.route("/").get(getStudents).post(
   upload.fields([
@@ -21,6 +25,8 @@ router.route("/").get(getStudents).post(
   ]),
   createStudent
 );
+
+router.get("/class/:classSectionId", getStudentsByClassSection);
 
 router
   .route("/:id")

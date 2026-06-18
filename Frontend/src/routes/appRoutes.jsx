@@ -9,6 +9,8 @@ import Attendence from "../pages/Attendence/Attendence";
 import Timetable from "../pages/Timetable/Timetable";
 import FeeandFinance from "../pages/Fees/FeeandFinance";
 import Exams from "../pages/Exams/Exams";
+import Results from "../pages/Exams/Results";
+import TeacherAttendance from "../pages/Teacher/TeacherAttendance";
 // import Transport from "../pages/Transport/Transport";
 import NewAdmission from "../pages/Admission/NewAdmission";
 import Setting from "../pages/Setting/Setting";
@@ -36,10 +38,12 @@ function AppRoutes() {
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/Student" element={<Student />} />
         <Route path="/Teacher" element={<Teacher />} />
+        <Route path="/Teacher-Attendance" element={<TeacherAttendance />} />
         <Route path="/Attendence" element={<Attendence />} />
         <Route path="/Timetable" element={<Timetable />} />
         <Route path="/Fees" element={<FeeandFinance />} />
         <Route path="/Exams" element={<Exams />} />
+        <Route path="/Results" element={<Results />} />
         {/* <Route path="/Transport" element={<Transport />} /> */}
         <Route path="/Settings" element={<Setting />} />
        

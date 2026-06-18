@@ -22,11 +22,26 @@ const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
   const menu = [
     { icon: <FaHome />, name: "Dashboard", path: "/Dashboard" },
     { icon: <FaUserGraduate />, name: "Students", path: "/Student" },
-    { icon: <FaChalkboardTeacher />, name: "Teachers", path: "/Teacher" },
+    {
+      icon: <FaChalkboardTeacher />,
+      name: "Teacher",
+      subRoutes: [
+        { icon: <FaChalkboardTeacher />, name: "Teachers", path: "/Teacher" },
+        { icon: <FaClipboardCheck />, name: "Teacher Attendance", path: "/Teacher-Attendance" },
+      ],
+    },
+    { icon: <FaUserGraduate />, name: "New Admission", path: "/Admission/New-Admission" },
     { icon: <FaClipboardCheck />, name: "Attendance", path: "/Attendence" },
     { icon: <FaCalendarAlt />, name: "Timetable", path: "/Timetable" },
     { icon: <FaMoneyBill />, name: "Fees & Finance", path: "/Fees" },
-    { icon: <FaFileAlt />, name: "Exams", path: "/Exams" },
+    {
+      icon: <FaFileAlt />,
+      name: "Exams",
+      subRoutes: [
+        { icon: <FaFileAlt />, name: "Exams", path: "/Exams" },
+        { icon: <FaFileAlt />, name: "Results", path: "/Results" },
+      ],
+    },
     // { icon: <FaBus />, name: "Transport", path: "/Transport" },
     {
       icon: <FaCog />,

@@ -18,6 +18,10 @@ import guardianRoutes from "./routes/guardianRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
 import timetableRoutes from "./routes/timetableRoutes.js";
 import schoolProfileRoutes from "./routes/schoolProfileRoutes.js";
+import markRoutes from "./routes/markRoutes.js";
+import attendanceRoutes from "./routes/attendanceRoutes.js";
+import feeRoutes from "./routes/feeRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 
 import authMiddleware from "./middleware/authMiddleware.js";
 
@@ -52,6 +56,10 @@ app.use("/api/guardians", guardianRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/timetables", timetableRoutes);
+app.use("/api/marks", markRoutes);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api/fees", feeRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {
   res.send("School CRM Backend Running");
