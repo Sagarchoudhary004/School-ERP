@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
+import { getSchoolProfile, saveSchoolProfile } from "../../services/schoolProfileService";
 
 const SchoolProfile = () => {
   const [formData, setFormData] = useState({
@@ -27,27 +27,14 @@ const SchoolProfile = () => {
     });
   };
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
-      const token = localStorage.getItem("token");
+      const profile = await getSchoolProfile();
 
-      const response = await axios.get(
-        "http://localhost:5000/api/school-profile",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.data && Object.keys(response.data).length > 0) {
+      if (profile && Object.keys(profile).length > 0) {
         setFormData((prev) => ({
           ...prev,
-          ...response.data,
+          ...profile,
         }));
       }
     } catch (error) {
@@ -55,25 +42,19 @@ const SchoolProfile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchProfile();
+  }, [fetchProfile]);
 
   const handleSubmit = async () => {
     try {
-      const token = localStorage.getItem("token");
+      await saveSchoolProfile(formData);
 
-      const response = await axios.post(
-        "http://localhost:5000/api/school-profile",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      window.dispatchEvent(new Event("school-profile-updated"));
       alert("School Profile Saved Successfully");
-
-      console.log(response.data);
     } catch (error) {
       console.error(error);
       alert("Error Saving School Profile");

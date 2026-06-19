@@ -10,10 +10,12 @@ import {
 } from "react-icons/fa";
 
 import logo from "../assets/logo.png";
+import { getSchoolProfile } from "../services/schoolProfileService";
 
 const Navbar = ({ onMenuClick }) => {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
+  const [schoolName, setSchoolName] = useState("School CRM");
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -25,6 +27,21 @@ const Navbar = ({ onMenuClick }) => {
 
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const profile = await getSchoolProfile();
+        setSchoolName(profile?.schoolName || profile?.shortName || "School CRM");
+      } catch (error) {
+        console.error("Failed to load school profile", error);
+      }
+    };
+
+    fetchProfile();
+    window.addEventListener("school-profile-updated", fetchProfile);
+    return () => window.removeEventListener("school-profile-updated", fetchProfile);
   }, []);
 
   const quickActions = [
@@ -64,6 +81,9 @@ const Navbar = ({ onMenuClick }) => {
           </button>
 
           <img src={logo} alt="DEE Campus" className="w-10 h-10 object-contain" />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-slate-900">{schoolName}</p>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -107,11 +127,14 @@ const Navbar = ({ onMenuClick }) => {
       </div>
 
       <div className="hidden md:flex bg-white p-4 lg:p-5 rounded-3xl flex-col xl:flex-row gap-4 xl:gap-0 justify-between xl:items-center shadow-sm">
-        <input
-          type="text"
-          placeholder="Search students, staff, fees..."
-          className="w-full xl:w-[500px] border rounded-full px-5 py-3 outline-none focus:border-[#4f46e5]"
-        />
+        <div className="min-w-0">
+          <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+            School CRM
+          </p>
+          <h1 className="truncate text-2xl font-bold text-slate-900">
+            {schoolName}
+          </h1>
+        </div>
 
         <div className="flex flex-wrap gap-5 items-center justify-between xl:justify-end">
           <FaBell size={22} />

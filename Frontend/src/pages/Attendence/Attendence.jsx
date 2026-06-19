@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getStudents } from "../../services/studentService";
 import { saveAttendance, getAttendance } from "../../services/attendanceService";
 import { toast, ToastContainer } from "react-toastify";
@@ -9,16 +9,13 @@ const Attendence = () => {
   const [attendance, setAttendance] = useState({});
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    fetchStudentsAndAttendance();
-  }, [date]);
-
-  const fetchStudentsAndAttendance = async () => {
+  const fetchStudentsAndAttendance = useCallback(async () => {
     setLoading(true);
     try {
       const studentData = await getStudents();
-      setStudents(studentData);
+      setStudents(Array.isArray(studentData) ? studentData : []);
 
       const response = await getAttendance(date, "Student");
       const records = response.data || [];
@@ -36,23 +33,34 @@ const Attendence = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [date]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchStudentsAndAttendance();
+  }, [fetchStudentsAndAttendance]);
 
   const handleStatusChange = (studentId, status) => {
     setAttendance(prev => ({ ...prev, [studentId]: status }));
   };
 
   const handleSave = async () => {
-    try {
-      const attendanceData = Object.entries(attendance).map(([studentId, status]) => ({
-        studentId,
-        status,
-      }));
+    if (!date) {
+      toast.warning("Please select an attendance date.");
+      return;
+    }
 
-      if (attendanceData.length === 0) {
-        toast.warning("No attendance records to save.");
-        return;
-      }
+    if (students.length === 0) {
+      toast.warning("No students found to mark attendance.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const attendanceData = students.map((student) => ({
+        studentId: student._id,
+        status: attendance[student._id] || "Present",
+      }));
 
       await saveAttendance({
         date,
@@ -63,7 +71,9 @@ const Attendence = () => {
       toast.success("Attendance saved successfully.");
     } catch (error) {
       console.error("Error saving attendance:", error);
-      toast.error("Failed to save attendance.");
+      toast.error(error?.response?.data?.message || "Failed to save attendance.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -81,9 +91,10 @@ const Attendence = () => {
           />
           <button
             onClick={handleSave}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            disabled={saving || loading}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Save Attendance
+            {saving ? "Saving..." : "Save Attendance"}
           </button>
         </div>
       </div>
@@ -111,8 +122,9 @@ const Attendence = () => {
                     <div className="flex justify-center gap-2">
                       <button
                         onClick={() => handleStatusChange(student._id, "Present")}
+                        title="Present"
                         className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          attendance[student._id] === "Present"
+                          (attendance[student._id] || "Present") === "Present"
                             ? "bg-green-100 text-green-700 border border-green-300"
                             : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                         }`}
@@ -121,6 +133,7 @@ const Attendence = () => {
                       </button>
                       <button
                         onClick={() => handleStatusChange(student._id, "Absent")}
+                        title="Absent"
                         className={`px-3 py-1 rounded-full text-sm font-medium ${
                           attendance[student._id] === "Absent"
                             ? "bg-red-100 text-red-700 border border-red-300"
@@ -131,6 +144,7 @@ const Attendence = () => {
                       </button>
                       <button
                         onClick={() => handleStatusChange(student._id, "Leave")}
+                        title="Leave"
                         className={`px-3 py-1 rounded-full text-sm font-medium ${
                           attendance[student._id] === "Leave"
                             ? "bg-yellow-100 text-yellow-700 border border-yellow-300"

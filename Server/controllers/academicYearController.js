@@ -58,6 +58,7 @@ export const createAcademicYear = async (
         name,
         startDate,
         endDate,
+        isCurrent: (await Academicyear.countDocuments({ isActive: true })) === 0,
       });
 
     res.status(201).json({
@@ -119,11 +120,7 @@ export const updateAcademicYear = async (
   try {
 
     const { id } = req.params;
-    const {
-      name,
-      startDate,
-      endDate,
-    } = req.body;
+    const { name, startDate, endDate, isCurrent } = req.body;
 
     if (
       startDate &&
@@ -153,6 +150,16 @@ export const updateAcademicYear = async (
             "Academic Year already exists",
         });
       }
+    }
+
+    if (isCurrent === true) {
+      await Academicyear.updateMany(
+        {
+          _id: { $ne: id },
+          isActive: true,
+        },
+        { $set: { isCurrent: false } }
+      );
     }
 
     const updatedYear =

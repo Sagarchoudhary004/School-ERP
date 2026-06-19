@@ -35,7 +35,25 @@ const attendanceSchema = new mongoose.Schema(
 );
 
 // Prevent duplicate attendance records per user per day
-attendanceSchema.index({ date: 1, student: 1 }, { unique: true, sparse: true });
-attendanceSchema.index({ date: 1, teacher: 1 }, { unique: true, sparse: true });
+attendanceSchema.index(
+  { date: 1, student: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      userType: "Student",
+      student: { $exists: true },
+    },
+  }
+);
+attendanceSchema.index(
+  { date: 1, teacher: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      userType: "Teacher",
+      teacher: { $exists: true },
+    },
+  }
+);
 
 export default mongoose.model("Attendance", attendanceSchema);

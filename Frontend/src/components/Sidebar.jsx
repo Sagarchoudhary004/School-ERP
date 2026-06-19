@@ -5,9 +5,9 @@ import {
   FaChalkboardTeacher,
   FaClipboardCheck,
   FaCalendarAlt,
+  FaCalendarCheck,
   FaMoneyBill,
   FaFileAlt,
-  FaBus,
   FaCog,
   FaChevronDown,
   FaChevronUp,
@@ -16,9 +16,9 @@ import {
 import { NavLink, useLocation,useNavigate} from "react-router-dom";
 
 import logo from "../assets/logo.png";
+import { getAcademicYears } from "../services/academicYearServices";
 
 const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
-  const navigate = useNavigate();
   const menu = [
     { icon: <FaHome />, name: "Dashboard", path: "/Dashboard" },
     { icon: <FaUserGraduate />, name: "Students", path: "/Student" },
@@ -54,10 +54,6 @@ const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
       ],
     },
   ];
-   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/Login");
-  };
   return (
     <>
       <div className="hidden md:flex md:w-[280px] md:fixed md:left-0 md:top-0 md:h-screen md:min-h-screen bg-[#06123f] text-white p-5 flex-col overflow-y-auto">
@@ -83,17 +79,31 @@ const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
 const SidebarContent = ({ menu }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [academicYear, setAcademicYear] = useState("Not set");
   const activeDropdownIndex = menu.findIndex((item) =>
     item.subRoutes?.some((sub) => sub.path === location.pathname)
   );
-  const [openDropdown, setOpenDropdown] = useState(
-    activeDropdownIndex === -1 ? null : activeDropdownIndex
-  );
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const visibleDropdown =
+    openDropdown === null ? activeDropdownIndex : openDropdown;
+
   useEffect(() => {
-    if (activeDropdownIndex !== -1) {
-      setOpenDropdown(activeDropdownIndex);
-    }
-  }, [activeDropdownIndex]);
+    const fetchCurrentYear = async () => {
+      try {
+        const response = await getAcademicYears();
+        const years = response.data?.data || [];
+        const current = years.find((year) => year.isCurrent) || years[0];
+        setAcademicYear(current?.name || "Not set");
+      } catch (error) {
+        console.error("Failed to load academic year", error);
+        setAcademicYear("Not set");
+      }
+    };
+
+    fetchCurrentYear();
+    window.addEventListener("academic-year-updated", fetchCurrentYear);
+    return () => window.removeEventListener("academic-year-updated", fetchCurrentYear);
+  }, []);
   const handleLogout = () => {
   localStorage.removeItem("token");
   navigate("/Login");
@@ -118,7 +128,7 @@ const SidebarContent = ({ menu }) => {
           item.subRoutes ? (
             <div key={index}>
               <button
-                onClick={() => setOpenDropdown(openDropdown === index ? null : index)}
+                onClick={() => setOpenDropdown(visibleDropdown === index ? -1 : index)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#0f215f] transition-all ${
                   item.subRoutes.some((sub) => sub.path === location.pathname)
                     ? "bg-[#0f215f]"
@@ -127,10 +137,10 @@ const SidebarContent = ({ menu }) => {
               >
                 <span>{item.icon}</span>
                 <span className="flex-1 text-left text-sm">{item.name}</span>
-                {openDropdown === index ? <FaChevronUp /> : <FaChevronDown />}
+                {visibleDropdown === index ? <FaChevronUp /> : <FaChevronDown />}
               </button>
 
-              {openDropdown === index && (
+              {visibleDropdown === index && (
                 <div className="ml-4 pl-3 border-l border-white/10 space-y-1 mt-1">
                   {item.subRoutes.map((sub, subIndex) => (
                     <NavLink
@@ -169,10 +179,10 @@ const SidebarContent = ({ menu }) => {
 
       <div className="bg-[#0d1d57] rounded-3xl p-4 mt-4 mb-2 flex flex-col items-center justify-center text-center">
         <div className="w-10 h-10 rounded-full bg-[#1b2d78] flex items-center justify-center mb-4">
-          📅
+          <FaCalendarCheck />
         </div>
         <p className="text-gray-300 text-xs md:text-sm tracking-wider">ACADEMIC YEAR</p>
-        <h2 className="text-2xl md:text-3xl font-bold mt-2">2026-27</h2>
+        <h2 className="text-2xl md:text-3xl font-bold mt-2">{academicYear}</h2>
         <div className="flex items-center gap-2 mt-4">
           <span className="w-2 h-2 rounded-full bg-green-500" />
           <span className="text-sm text-gray-300">Active Session</span>

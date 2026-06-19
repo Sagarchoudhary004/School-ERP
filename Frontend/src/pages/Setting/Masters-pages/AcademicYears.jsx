@@ -1,4 +1,4 @@
-import React, { useState,useEffect} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
 
 import {
@@ -11,22 +11,23 @@ import {
 export default function AcademicYears() {
   const [academicYears, setAcademicYears] = useState([]);
 
-  const [currentYear, setCurrentYear] = useState("2025-26");
+  const [currentYear, setCurrentYear] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const fetchAcademicYears = async () => {
+  const fetchAcademicYears = useCallback(async () => {
   try {
 
     const response =
       await getAcademicYears();
 
-    setAcademicYears(
-      response.data.data
-    );
+    const years = response.data.data || [];
+    setAcademicYears(years);
+    const current = years.find((year) => year.isCurrent) || years[0];
+    setCurrentYear(current?._id || "");
 
   } catch (error) {
 
@@ -38,10 +39,11 @@ export default function AcademicYears() {
   );
 
 }
-};
-useEffect(() => {
-  fetchAcademicYears();
 }, []);
+useEffect(() => {
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  fetchAcademicYears();
+}, [fetchAcademicYears]);
 
   const handleAddYear = async () => {
 
@@ -100,10 +102,7 @@ useEffect(() => {
     }
 
     await fetchAcademicYears();
-
-    setCurrentYear(
-      academicYearName
-    );
+    window.dispatchEvent(new Event("academic-year-updated"));
 
     setEditId(null);
 
@@ -128,6 +127,42 @@ useEffect(() => {
   }
 
 };
+const handleCurrentYearChange = async (id) => {
+
+  try {
+
+    setError("");
+    setSuccessMessage("");
+    setCurrentYear(id);
+
+    const response =
+      await updateAcademicYear(
+        id,
+        {
+          isCurrent: true,
+        }
+      );
+
+    await fetchAcademicYears();
+    window.dispatchEvent(new Event("academic-year-updated"));
+
+    setSuccessMessage(
+      response.data.message ||
+      "Current Academic Year updated"
+    );
+
+  } catch (error) {
+
+    console.log(error);
+
+    setError(
+      error?.response?.data?.message ||
+      "Failed to update current Academic Year"
+    );
+
+  }
+
+};
 const handleDelete = async (id) => {
 
   try {
@@ -139,6 +174,7 @@ const handleDelete = async (id) => {
       await deleteAcademicYear(id);
 
     await fetchAcademicYears();
+    window.dispatchEvent(new Event("academic-year-updated"));
 
     setSuccessMessage(
       response.data.message
@@ -239,11 +275,11 @@ const handleEdit = (year) => {
           <div className="flex gap-3">
             <select
               value={currentYear}
-              onChange={(e) => setCurrentYear(e.target.value)}
+              onChange={(e) => handleCurrentYearChange(e.target.value)}
               className="bg-gray-100 rounded-lg px-3 py-2 text-sm flex-1 outline-none"
             >
               {academicYears.map((year) => (
-                <option key={year._id} value={year.name}>
+                <option key={year._id} value={year._id}>
                   {year.name}
                 </option>
               ))}
