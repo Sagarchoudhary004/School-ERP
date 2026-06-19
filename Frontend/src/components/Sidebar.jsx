@@ -47,7 +47,7 @@ const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
       icon: <FaCog />,
       name: "Settings",
       subRoutes: [
-        { icon: <FaCog />, name: "Overview", path: "/Settings" },
+        // { icon: <FaCog />, name: "Overview", path: "/Settings" },
       
         { icon: <FaCog />, name: "Masters", path: "/Settings/Masters" },
         { icon: <FaCog />, name: "School Profile", path: "/Settings/School-Profile" },
