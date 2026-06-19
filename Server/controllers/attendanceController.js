@@ -71,29 +71,39 @@ export const saveAttendance = async (req, res) => {
         userType,
       };
 
-      if (userType === "Student") {
-        query.student = userId;
-      } else {
-        query.teacher = userId;
-      }
-
+      // Build update object — only include the relevant user field
+      // to avoid setting null on the opposite field which triggers index issues
       const update = {
-        ...query,
+        date: normalizedDate,
+        userType,
         status: item.status,
         remarks: item.remarks || "",
       };
 
-      return Attendance.findOneAndUpdate(query, update, {
+      if (userType === "Student") {
+        query.student = userId;
+        update.student = userId;
+      } else {
+        query.teacher = userId;
+        update.teacher = userId;
+      }
+
+      return Attendance.findOneAndUpdate(query, { $set: update }, {
         upsert: true,
         new: true,
         runValidators: true,
       });
     });
 
-    await Promise.all(operations);
+    const results = await Promise.all(operations);
 
-    res.status(200).json({ success: true, message: "Attendance saved successfully" });
+    res.status(200).json({
+      success: true,
+      message: "Attendance saved successfully",
+      data: { count: results.length },
+    });
   } catch (error) {
+    console.error("Attendance save error:", error.message);
     res.status(500).json({
       success: false,
       message: error.message || "Failed to save attendance",
@@ -134,7 +144,7 @@ export const getAttendance = async (req, res) => {
       userType,
     };
 
-    let attendanceRecords = await Attendance.find(query)
+    const attendanceRecords = await Attendance.find(query)
       .populate({
         path: "student",
         select: "firstName lastName rollNumber studentClass section status",
@@ -146,6 +156,7 @@ export const getAttendance = async (req, res) => {
 
     res.status(200).json({ success: true, data: attendanceRecords });
   } catch (error) {
+    console.error("Attendance fetch error:", error.message);
     res.status(500).json({
       success: false,
       message: error.message || "Failed to load attendance",

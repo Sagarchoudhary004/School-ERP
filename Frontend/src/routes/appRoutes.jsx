@@ -27,6 +27,7 @@ import Designations from "../pages/Setting/Masters-pages/Designations";
 import Categories from "../pages/Setting/Masters-pages/Categories";
 import AcademicCalendar from "../pages/Setting/Masters-pages/AcademicCalendar";
 import ProtectedRoute from "../components/Protectedroutes";
+import NotFound from "../pages/NotFound";
 
 function AppRoutes() {
   return (
@@ -60,6 +61,9 @@ function AppRoutes() {
           <Route path="Academic-Calendar" element={<AcademicCalendar />} />
         </Route>
         <Route path="/Admission/New-Admission" element={<NewAdmission />} />
+
+        {/* 404 within dashboard layout */}
+        <Route path="*" element={<NotFound />} />
       </Route>
       </Route>
       <Route path="/admission" element={<Navigate to="/Admission/New-Admission" replace />} />
@@ -67,7 +71,7 @@ function AppRoutes() {
       <Route path="/attendance" element={<Navigate to="/Attendence" replace />} />
       <Route path="/admissions/enquiry" element={<Navigate to="/Student" replace />} />
 
-      <Route path="*" element={<Navigate to="/Login" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

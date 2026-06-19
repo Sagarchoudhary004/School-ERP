@@ -4,28 +4,129 @@ import Student from "../models/Student.js";
 
 export const getFeeStructures = async (req, res) => {
   try {
-    const structures = await FeeStructure.find().populate("student", "firstName lastName rollNumber studentClass");
-    res.status(200).json(structures);
+    const structures = await FeeStructure.find()
+      .populate("student", "firstName lastName rollNumber studentClass")
+      .sort({ createdAt: -1 });
+    res.status(200).json({
+      success: true,
+      data: structures,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const createFeeStructure = async (req, res) => {
   try {
+    const { name, amount, type, targetClass, student: studentId } = req.body;
+
+    if (!name || amount === undefined || amount === null || !type) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, amount, and type are required",
+      });
+    }
+
+    if (Number(amount) <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount must be greater than 0",
+      });
+    }
+
+    if (type === "Class" && !targetClass) {
+      return res.status(400).json({
+        success: false,
+        message: "Target class is required for class-based fee structures",
+      });
+    }
+
+    if (type === "Student" && !studentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Student is required for student-based fee structures",
+      });
+    }
+
     const structure = await FeeStructure.create(req.body);
-    res.status(201).json(structure);
+    res.status(201).json({
+      success: true,
+      message: "Fee structure created successfully",
+      data: structure,
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+export const updateFeeStructure = async (req, res) => {
+  try {
+    const { name, amount, type, targetClass } = req.body;
+
+    if (!name || amount === undefined || amount === null || !type) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, amount, and type are required",
+      });
+    }
+
+    if (Number(amount) <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount must be greater than 0",
+      });
+    }
+
+    if (type === "Class" && !targetClass) {
+      return res.status(400).json({
+        success: false,
+        message: "Target class is required for class-based fee structures",
+      });
+    }
+
+    const structure = await FeeStructure.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!structure) {
+      return res.status(404).json({
+        success: false,
+        message: "Fee structure not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Fee structure updated successfully",
+      data: structure,
+    });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
 export const deleteFeeStructure = async (req, res) => {
   try {
-    await FeeStructure.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Fee structure deleted" });
+    const structure = await FeeStructure.findByIdAndDelete(req.params.id);
+
+    if (!structure) {
+      return res.status(404).json({
+        success: false,
+        message: "Fee structure not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Fee structure deleted successfully",
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -34,18 +135,41 @@ export const getFeePayments = async (req, res) => {
     const payments = await FeePayment.find()
       .populate("student", "firstName lastName rollNumber studentClass section")
       .sort({ createdAt: -1 });
-    res.status(200).json(payments);
+    res.status(200).json({
+      success: true,
+      data: payments,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const recordFeePayment = async (req, res) => {
   try {
+    const { student, amountPaid, paymentMethod } = req.body;
+
+    if (!student || !amountPaid || !paymentMethod) {
+      return res.status(400).json({
+        success: false,
+        message: "Student, amount paid, and payment method are required",
+      });
+    }
+
+    if (Number(amountPaid) <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount paid must be greater than 0",
+      });
+    }
+
     const payment = await FeePayment.create(req.body);
-    res.status(201).json(payment);
+    res.status(201).json({
+      success: true,
+      message: "Payment recorded successfully",
+      data: payment,
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -55,7 +179,10 @@ export const getStudentFeeStatus = async (req, res) => {
     const student = await Student.findById(studentId);
 
     if (!student) {
-      return res.status(404).json({ message: "Student not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
     }
 
     const classStructures = await FeeStructure.find({ type: "Class", targetClass: student.studentClass });
@@ -67,15 +194,18 @@ export const getStudentFeeStatus = async (req, res) => {
     const totalPaid = payments.reduce((sum, p) => sum + p.amountPaid, 0);
 
     res.status(200).json({
-      student,
-      totalAssigned,
-      totalPaid,
-      pendingFee: totalAssigned - totalPaid,
-      structures: [...classStructures, ...studentStructures],
-      payments,
+      success: true,
+      data: {
+        student,
+        totalAssigned,
+        totalPaid,
+        pendingFee: totalAssigned - totalPaid,
+        structures: [...classStructures, ...studentStructures],
+        payments,
+      },
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -88,18 +218,22 @@ export const getFeeSummary = async (req, res) => {
 
     let totalExpected = 0;
     
-    // Group structures by class
+    // Group fee structures by target class
     const classFeeMap = {};
     classStructures.forEach(s => {
-      classFeeMap[s.targetClass] = (classFeeMap[s.targetClass] || 0) + s.amount;
+      const key = String(s.targetClass).trim().toLowerCase();
+      classFeeMap[key] = (classFeeMap[key] || 0) + s.amount;
     });
 
+    // Calculate expected fee per student based on their class
     students.forEach(student => {
-      if (classFeeMap[student.studentClass]) {
-        totalExpected += classFeeMap[student.studentClass];
+      const studentClassKey = String(student.studentClass).trim().toLowerCase();
+      if (classFeeMap[studentClassKey]) {
+        totalExpected += classFeeMap[studentClassKey];
       }
     });
 
+    // Add student-specific fee structures
     studentStructures.forEach(s => {
       totalExpected += s.amount;
     });
@@ -107,11 +241,14 @@ export const getFeeSummary = async (req, res) => {
     const totalCollected = payments.reduce((sum, p) => sum + p.amountPaid, 0);
 
     res.status(200).json({
-      totalExpected,
-      totalCollected,
-      totalPending: totalExpected - totalCollected,
+      success: true,
+      data: {
+        totalExpected,
+        totalCollected,
+        totalPending: totalExpected - totalCollected,
+      },
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };

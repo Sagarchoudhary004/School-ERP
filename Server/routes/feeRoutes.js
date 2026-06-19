@@ -3,6 +3,7 @@ import authMiddleware from "../middleware/authMiddleware.js";
 import {
   getFeeStructures,
   createFeeStructure,
+  updateFeeStructure,
   deleteFeeStructure,
   getFeePayments,
   recordFeePayment,
@@ -17,6 +18,7 @@ router.use(authMiddleware);
 router.get("/summary", getFeeSummary);
 router.get("/structures", getFeeStructures);
 router.post("/structures", createFeeStructure);
+router.put("/structures/:id", updateFeeStructure);
 router.delete("/structures/:id", deleteFeeStructure);
 router.get("/payments", getFeePayments);
 router.post("/payments", recordFeePayment);

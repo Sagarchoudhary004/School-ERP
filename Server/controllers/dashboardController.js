@@ -35,13 +35,19 @@ export const getDashboardStats = async (req, res) => {
     };
 
     res.status(200).json({
-      schoolName: profile?.schoolName || "School CRM",
-      totalStudents,
-      totalTeachers,
-      studentAttendance: summarizeAttendance(studentAttendanceRecords, totalStudents),
-      staffAttendance: summarizeAttendance(teacherAttendanceRecords, totalTeachers),
+      success: true,
+      data: {
+        schoolName: profile?.schoolName || "School CRM",
+        totalStudents,
+        totalTeachers,
+        studentAttendance: summarizeAttendance(studentAttendanceRecords, totalStudents),
+        staffAttendance: summarizeAttendance(teacherAttendanceRecords, totalTeachers),
+      },
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

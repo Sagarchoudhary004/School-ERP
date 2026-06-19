@@ -47,9 +47,14 @@ export const createTeacher = async (req, res) => {
 
     const teacher = await Teacher.create(payload);
 
-    res.status(201).json(teacher);
+    res.status(201).json({
+      success: true,
+      message: "Teacher created successfully",
+      data: teacher,
+    });
   } catch (error) {
     res.status(error.statusCode || 500).json({
+      success: false,
       message: error.message,
     });
   }
@@ -65,9 +70,13 @@ export const getTeachers = async (req, res) => {
       createdAt: -1,
     });
 
-    res.status(200).json(teachers);
+    res.status(200).json({
+      success: true,
+      data: teachers,
+    });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
@@ -85,13 +94,18 @@ export const getTeacherById = async (req, res) => {
 
     if (!teacher) {
       return res.status(404).json({
+        success: false,
         message: "Teacher not found",
       });
     }
 
-    res.status(200).json(teacher);
+    res.status(200).json({
+      success: true,
+      data: teacher,
+    });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
@@ -112,9 +126,21 @@ export const updateTeacher = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    res.status(200).json(teacher);
+    if (!teacher) {
+      return res.status(404).json({
+        success: false,
+        message: "Teacher not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Teacher updated successfully",
+      data: teacher,
+    });
   } catch (error) {
     res.status(error.statusCode || 500).json({
+      success: false,
       message: error.message,
     });
   }
@@ -126,15 +152,24 @@ export const updateTeacher = async (req, res) => {
 
 export const deleteTeacher = async (req, res) => {
   try {
-    await Teacher.findByIdAndDelete(
+    const teacher = await Teacher.findByIdAndDelete(
       req.params.id
     );
 
+    if (!teacher) {
+      return res.status(404).json({
+        success: false,
+        message: "Teacher not found",
+      });
+    }
+
     res.status(200).json({
-      message: "Teacher deleted",
+      success: true,
+      message: "Teacher deleted successfully",
     });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: error.message,
     });
   }

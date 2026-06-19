@@ -10,5 +10,6 @@ const getAuthConfig = () => ({
 
 export const getDashboardStats = async () => {
   const response = await axios.get(`${API_URL}/stats`, getAuthConfig());
-  return response.data;
+  // Unwrap standardized response: {success, data} → return data
+  return response.data?.data || response.data;
 };

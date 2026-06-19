@@ -86,9 +86,14 @@ export const createStudent = async (req, res) => {
 
     const student = await Student.create(payload);
 
-    return res.status(201).json(student);
+    return res.status(201).json({
+      success: true,
+      message: "Student created successfully",
+      data: student,
+    });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
+      success: false,
       message: error.message || "Internal server error",
     });
   }
@@ -100,9 +105,15 @@ export const getStudents = async (req, res) => {
     const students = await Student.find()
       .sort({ createdAt: -1 })
       .limit(limit);
-    return res.status(200).json(students);
+    return res.status(200).json({
+      success: true,
+      data: students,
+    });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -111,7 +122,10 @@ export const getStudentsByClassSection = async (req, res) => {
     const classSection = await ClassSection.findById(req.params.classSectionId);
 
     if (!classSection) {
-      return res.status(404).json({ message: "Class section not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Class section not found",
+      });
     }
 
     const students = await Student.find({
@@ -124,7 +138,10 @@ export const getStudentsByClassSection = async (req, res) => {
       data: students,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -133,12 +150,21 @@ export const getStudentById = async (req, res) => {
     const student = await Student.findById(req.params.id);
 
     if (!student) {
-      return res.status(404).json({ message: "Student not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
     }
 
-    return res.status(200).json(student);
+    return res.status(200).json({
+      success: true,
+      data: student,
+    });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -147,7 +173,10 @@ export const updateStudent = async (req, res) => {
     const existingStudent = await Student.findById(req.params.id);
 
     if (!existingStudent) {
-      return res.status(404).json({ message: "Student not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
     }
 
     const documents = buildDocumentsPayload(req.files);
@@ -170,9 +199,14 @@ export const updateStudent = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    return res.status(200).json(updatedStudent);
+    return res.status(200).json({
+      success: true,
+      message: "Student updated successfully",
+      data: updatedStudent,
+    });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
+      success: false,
       message: error.message || "Internal server error",
     });
   }
@@ -183,11 +217,20 @@ export const deleteStudent = async (req, res) => {
     const deletedStudent = await Student.findByIdAndDelete(req.params.id);
 
     if (!deletedStudent) {
-      return res.status(404).json({ message: "Student not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
     }
 
-    return res.status(200).json({ message: "Student deleted successfully" });
+    return res.status(200).json({
+      success: true,
+      message: "Student deleted successfully",
+    });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

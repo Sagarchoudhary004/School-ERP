@@ -137,7 +137,7 @@ const Navbar = ({ onMenuClick }) => {
         </div>
 
         <div className="flex flex-wrap gap-5 items-center justify-between xl:justify-end">
-          <FaBell size={22} />
+          {/* <FaBell size={22} /> */}
 
           <div className="relative" ref={menuRef}>
             <button
@@ -170,11 +170,11 @@ const Navbar = ({ onMenuClick }) => {
             )}
           </div>
 
-          <img
+          {/* <img
             src="https://i.pravatar.cc/50"
             alt="User avatar"
             className="rounded-full w-10 h-10"
-          />
+          /> */}
         </div>
       </div>
     </>

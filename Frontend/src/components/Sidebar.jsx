@@ -21,6 +21,7 @@ import { getAcademicYears } from "../services/academicYearServices";
 const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
   const menu = [
     { icon: <FaHome />, name: "Dashboard", path: "/Dashboard" },
+    { icon: <FaUserGraduate />, name: "New Admission", path: "/Admission/New-Admission" },
     { icon: <FaUserGraduate />, name: "Students", path: "/Student" },
     {
       icon: <FaChalkboardTeacher />,
@@ -30,7 +31,7 @@ const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
         { icon: <FaClipboardCheck />, name: "Teacher Attendance", path: "/Teacher-Attendance" },
       ],
     },
-    { icon: <FaUserGraduate />, name: "New Admission", path: "/Admission/New-Admission" },
+    
     { icon: <FaClipboardCheck />, name: "Attendance", path: "/Attendence" },
     { icon: <FaCalendarAlt />, name: "Timetable", path: "/Timetable" },
     { icon: <FaMoneyBill />, name: "Fees & Finance", path: "/Fees" },

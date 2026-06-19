@@ -35,13 +35,14 @@ const attendanceSchema = new mongoose.Schema(
 );
 
 // Prevent duplicate attendance records per user per day
+// Use $type instead of $exists so that null values don't match the index
 attendanceSchema.index(
   { date: 1, student: 1 },
   {
     unique: true,
     partialFilterExpression: {
       userType: "Student",
-      student: { $exists: true },
+      student: { $type: "objectId" },
     },
   }
 );
@@ -51,7 +52,7 @@ attendanceSchema.index(
     unique: true,
     partialFilterExpression: {
       userType: "Teacher",
-      teacher: { $exists: true },
+      teacher: { $type: "objectId" },
     },
   }
 );

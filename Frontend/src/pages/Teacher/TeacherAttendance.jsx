@@ -10,9 +10,11 @@ const TeacherAttendance = () => {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   const fetchTeachersAndAttendance = useCallback(async () => {
     setLoading(true);
+    setError("");
     try {
       const teacherData = await getTeachers();
       setTeachers(Array.isArray(teacherData) ? teacherData : []);
@@ -27,8 +29,9 @@ const TeacherAttendance = () => {
         }
       });
       setAttendance(attendanceMap);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError("Failed to load attendance data. Please try again.");
       toast.error("Failed to load attendance data.");
     } finally {
       setLoading(false);
@@ -36,7 +39,6 @@ const TeacherAttendance = () => {
   }, [date]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchTeachersAndAttendance();
   }, [fetchTeachersAndAttendance]);
 
@@ -69,9 +71,11 @@ const TeacherAttendance = () => {
       });
 
       toast.success("Attendance saved successfully.");
-    } catch (error) {
-      console.error("Error saving attendance:", error);
-      toast.error(error?.response?.data?.message || "Failed to save attendance.");
+      // Auto-refresh after save
+      await fetchTeachersAndAttendance();
+    } catch (err) {
+      console.error("Error saving attendance:", err);
+      toast.error(err?.response?.data?.message || "Failed to save attendance.");
     } finally {
       setSaving(false);
     }
@@ -99,8 +103,14 @@ const TeacherAttendance = () => {
         </div>
       </div>
 
+      {error && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 mb-4">
+          {error}
+        </div>
+      )}
+
       {loading ? (
-        <p>Loading...</p>
+        <div className="flex justify-center py-10 text-slate-500">Loading...</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
