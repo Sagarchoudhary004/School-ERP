@@ -4,6 +4,8 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
+import Attendance from "./models/Attendance.js";
+import FeeStructure from "./models/FeeStructure.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import academicYearRoutes from "./routes/academicYearRoutes.js";
@@ -26,58 +28,79 @@ import dashboardRoutes from "./routes/dashboardRoutes.js";
 import authMiddleware from "./middleware/authMiddleware.js";
 
 dotenv.config();
-connectDB();
 
-const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const startServer = async () => {
+  await connectDB();
 
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
-    credentials: true,
-  }),
-);
+  // Sync indexes to fix stale/conflicting indexes in MongoDB
+  try {
+    await Attendance.syncIndexes();
+    console.log("Attendance indexes synced");
+  } catch (err) {
+    console.error("Failed to sync Attendance indexes:", err.message);
+  }
+  try {
+    await FeeStructure.syncIndexes();
+    console.log("FeeStructure indexes synced");
+  } catch (err) {
+    console.error("Failed to sync FeeStructure indexes:", err.message);
+  }
 
+  const app = express();
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
 
-app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/api/school-profile", schoolProfileRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/academic-year", academicYearRoutes);
-app.use("/api/exam-types", examTypeRoutes);
-app.use("/api/class-sections", classSectionRoutes);
-app.use("/api/subjects", subjectRoutes);
-app.use("/api/departments", departmentRoutes);
-app.use("/api/designations", designationRoutes);
-app.use("/api/categories", categoryRoutes);
-app.use("/api/academic-calendar", academicCalendarRoutes);
-app.use("/api/guardians", guardianRoutes);
-app.use("/api/students", studentRoutes);
-app.use("/api/teachers", teacherRoutes);
-app.use("/api/timetables", timetableRoutes);
-app.use("/api/marks", markRoutes);
-app.use("/api/attendance", attendanceRoutes);
-app.use("/api/fees", feeRoutes);
-app.use("/api/dashboard", dashboardRoutes);
+  app.use(
+    cors({
+      origin: process.env.CLIENT_URL || "http://localhost:5173",
+      credentials: true,
+    })
+  );
 
-app.get("/", (req, res) => {
-  res.send("School CRM Backend Running");
-});
+  app.use(express.json());
+  app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+  app.use("/api/school-profile", schoolProfileRoutes);
+  app.use("/api/auth", authRoutes);
+  app.use("/api/academic-year", academicYearRoutes);
+  app.use("/api/exam-types", examTypeRoutes);
+  app.use("/api/class-sections", classSectionRoutes);
+  app.use("/api/subjects", subjectRoutes);
+  app.use("/api/departments", departmentRoutes);
+  app.use("/api/designations", designationRoutes);
+  app.use("/api/categories", categoryRoutes);
+  app.use("/api/academic-calendar", academicCalendarRoutes);
+  app.use("/api/guardians", guardianRoutes);
+  app.use("/api/students", studentRoutes);
+  app.use("/api/teachers", teacherRoutes);
+  app.use("/api/timetables", timetableRoutes);
+  app.use("/api/marks", markRoutes);
+  app.use("/api/attendance", attendanceRoutes);
+  app.use("/api/fees", feeRoutes);
+  app.use("/api/dashboard", dashboardRoutes);
 
-app.use((req, res) => {
-  res.status(404).json({ message: "Route not found" });
-});
-
-app.use((error, req, res, next) => {
-  console.error(error);
-  res.status(error.statusCode || 500).json({
-    message: error.message || "Internal server error",
+  app.get("/", (req, res) => {
+    res.send("School CRM Backend Running");
   });
-});
 
-const PORT = process.env.PORT || 5000;
+  app.use((req, res) => {
+    res.status(404).json({ message: "Route not found" });
+  });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  app.use((error, req, res, next) => {
+    console.error(error);
+    res.status(error.statusCode || 500).json({
+      message: error.message || "Internal server error",
+    });
+  });
+
+  const PORT = process.env.PORT || 5000;
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
+
+startServer().catch((err) => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
 });

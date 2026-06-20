@@ -7,6 +7,15 @@ const feePaymentSchema = new mongoose.Schema(
       ref: "Student",
       required: true,
     },
+    feeStructure: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "FeeStructure",
+    },
+    academicYear: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     amountPaid: {
       type: Number,
       required: true,

@@ -19,8 +19,9 @@ export const createStudent = async (formData) => {
   return response.data?.data || response.data;
 };
 
-export const getStudents = async () => {
-  const response = await axios.get(`${API_URL}?limit=20`, getAuthConfig());
+export const getStudents = async (limit) => {
+  const url = limit ? `${API_URL}?limit=${limit}` : API_URL;
+  const response = await axios.get(url, getAuthConfig());
   // Unwrap standardized response: {success, data} → return data array
   return response.data?.data || response.data;
 };

@@ -26,11 +26,15 @@ export const getDashboardStats = async (req, res) => {
         if (r.status === "Leave") leave++;
       });
 
+      const marked = present + absent + leave;
+
       return {
         present,
         absent,
         leave,
         total: totalCount,
+        marked,
+        percentage: marked > 0 ? Math.round((present / marked) * 100) : 0,
       };
     };
 

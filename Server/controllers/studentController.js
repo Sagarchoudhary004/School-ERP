@@ -101,10 +101,12 @@ export const createStudent = async (req, res) => {
 
 export const getStudents = async (req, res) => {
   try {
-    const limit = Number(req.query.limit) || 20;
-    const students = await Student.find()
-      .sort({ createdAt: -1 })
-      .limit(limit);
+    const limit = req.query.limit ? Number(req.query.limit) : 0;
+    let query = Student.find().sort({ createdAt: -1 });
+    if (limit > 0) {
+      query = query.limit(limit);
+    }
+    const students = await query;
     return res.status(200).json({
       success: true,
       data: students,

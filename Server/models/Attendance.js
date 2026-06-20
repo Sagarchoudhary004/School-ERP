@@ -14,10 +14,12 @@ const attendanceSchema = new mongoose.Schema(
     student: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Student",
+      default: null,
     },
     teacher: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Teacher",
+      default: null,
     },
     status: {
       type: String,
@@ -34,8 +36,7 @@ const attendanceSchema = new mongoose.Schema(
   }
 );
 
-// Prevent duplicate attendance records per user per day
-// Use $type instead of $exists so that null values don't match the index
+// Prevent duplicate attendance records per student per day
 attendanceSchema.index(
   { date: 1, student: 1 },
   {
@@ -46,6 +47,8 @@ attendanceSchema.index(
     },
   }
 );
+
+// Prevent duplicate attendance records per teacher per day
 attendanceSchema.index(
   { date: 1, teacher: 1 },
   {
