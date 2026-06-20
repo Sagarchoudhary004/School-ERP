@@ -140,6 +140,19 @@ function Dashboard() {
         ))}
       </section>
 
+      <section>
+        <div className="mb-3">
+          <h2 className="text-lg font-semibold text-slate-900">Fee Overview</h2>
+          <p className="text-sm text-slate-500">Live totals from fee structures and recorded payments.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <FeeStat label="Total Fee Collected" value={`₹${Number(stats?.feeStats?.totalCollected || 0).toLocaleString("en-IN")}`} tone="text-emerald-700" />
+          <FeeStat label="Pending Fee Amount" value={`₹${Number(stats?.feeStats?.totalPending || 0).toLocaleString("en-IN")}`} tone="text-amber-700" />
+          <FeeStat label="Students Paid" value={stats?.feeStats?.studentsPaid || 0} tone="text-blue-700" />
+          <FeeStat label="Students Pending" value={stats?.feeStats?.studentsPending || 0} tone="text-red-700" />
+        </div>
+      </section>
+
       <section className="grid grid-cols-1 xl:grid-cols-[1.4fr_0.8fr] gap-5">
         <div className="rounded-2xl bg-white p-5 sm:p-6 shadow-sm border border-slate-100">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-5">
@@ -226,6 +239,13 @@ const StatusCount = ({ label, value, color }) => (
   <div className="rounded-lg bg-slate-50 p-3">
     <p className={`text-lg font-bold ${color}`}>{value}</p>
     <p className="text-xs text-slate-500">{label}</p>
+  </div>
+);
+
+const FeeStat = ({ label, value, tone }) => (
+  <div className="rounded-2xl bg-white p-5 shadow-sm border border-slate-100">
+    <p className="text-sm text-slate-500">{label}</p>
+    <p className={`mt-2 text-2xl font-bold ${tone}`}>{value}</p>
   </div>
 );
 

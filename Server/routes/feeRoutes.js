@@ -9,6 +9,7 @@ import {
   recordFeePayment,
   getStudentFeeStatus,
   getFeeSummary,
+  getReceipt,
 } from "../controllers/feeController.js";
 
 const router = express.Router();
@@ -23,5 +24,6 @@ router.delete("/structures/:id", deleteFeeStructure);
 router.get("/payments", getFeePayments);
 router.post("/payments", recordFeePayment);
 router.get("/student-status/:studentId", getStudentFeeStatus);
+router.get("/receipts/:paymentId", getReceipt);
 
 export default router;

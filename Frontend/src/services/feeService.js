@@ -8,14 +8,14 @@ const getAuthConfig = () => ({
   },
 });
 
-export const getFeeSummary = async () => {
-  const response = await axios.get(`${API_URL}/summary`, getAuthConfig());
+export const getFeeSummary = async (academicYear) => {
+  const response = await axios.get(`${API_URL}/summary`, { ...getAuthConfig(), params: { academicYear } });
   // Unwrap standardized response
   return response.data?.data || response.data;
 };
 
-export const getFeeStructures = async () => {
-  const response = await axios.get(`${API_URL}/structures`, getAuthConfig());
+export const getFeeStructures = async (params = {}) => {
+  const response = await axios.get(`${API_URL}/structures`, { ...getAuthConfig(), params });
   return response.data?.data || response.data;
 };
 
@@ -34,8 +34,8 @@ export const deleteFeeStructure = async (id) => {
   return response.data;
 };
 
-export const getFeePayments = async () => {
-  const response = await axios.get(`${API_URL}/payments`, getAuthConfig());
+export const getFeePayments = async (params = {}) => {
+  const response = await axios.get(`${API_URL}/payments`, { ...getAuthConfig(), params });
   return response.data?.data || response.data;
 };
 
@@ -44,7 +44,12 @@ export const recordFeePayment = async (data) => {
   return response.data?.data || response.data;
 };
 
-export const getStudentFeeStatus = async (studentId) => {
-  const response = await axios.get(`${API_URL}/student-status/${studentId}`, getAuthConfig());
+export const getStudentFeeStatus = async (studentId, academicYear) => {
+  const response = await axios.get(`${API_URL}/student-status/${studentId}`, { ...getAuthConfig(), params: { academicYear } });
+  return response.data?.data || response.data;
+};
+
+export const getFeeReceipt = async (paymentId) => {
+  const response = await axios.get(`${API_URL}/receipts/${paymentId}`, getAuthConfig());
   return response.data?.data || response.data;
 };

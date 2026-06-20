@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 import Attendance from "./models/Attendance.js";
 import FeeStructure from "./models/FeeStructure.js";
+import FeePayment from "./models/FeePayment.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import academicYearRoutes from "./routes/academicYearRoutes.js";
@@ -41,6 +42,7 @@ const startServer = async () => {
   }
   try {
     await FeeStructure.syncIndexes();
+    await FeePayment.syncIndexes();
     console.log("FeeStructure indexes synced");
   } catch (err) {
     console.error("Failed to sync FeeStructure indexes:", err.message);
