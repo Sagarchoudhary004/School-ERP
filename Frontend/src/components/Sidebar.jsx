@@ -106,9 +106,12 @@ const SidebarContent = ({ menu }) => {
     return () => window.removeEventListener("academic-year-updated", fetchCurrentYear);
   }, []);
   const handleLogout = () => {
-  localStorage.removeItem("token");
-  navigate("/Login");
-};
+    const confirmed = window.confirm("Are you sure you want to log out?");
+    if (!confirmed) return;
+
+    localStorage.removeItem("token");
+    navigate("/Login", { replace: true });
+  };
 
   return (
     <>
