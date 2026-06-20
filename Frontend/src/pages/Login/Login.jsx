@@ -161,16 +161,16 @@ function LoginCard({
   label="Password"
   type="password"
   icon={FiLock}
-  placeholder="••••••••"
+  placeholder="Enter your password"
   value={password}
   onChange={(e) =>
     setPassword(e.target.value)
   }
-          trailing={
-            <button type="button" aria-label="Show password" className="ml-[18px] text-[#828BA9]">
-              <FiEye className="h-[25px] w-[25px]" aria-hidden="true" />
-            </button>
-          }
+          // trailing={
+          //   <button type="button" aria-label="Show password" className="ml-[18px] text-[#828BA9]">
+          //     <FiEye className="h-[25px] w-[25px]" aria-hidden="true" />
+          //   </button>
+          // }
         />
       </div>
 
@@ -188,16 +188,16 @@ function LoginCard({
 
       <div className="mt-[29px] flex items-center justify-between text-[20px] font-medium leading-none">
         <label className="flex items-center gap-[13px] text-[#858BA9]">
-          <input
+          {/* <input
             type="checkbox"
             defaultChecked
             className="h-[24px] w-[24px] rounded-[4px] accent-[#7046F5]"
-          />
-          <span>Remember me</span>
+          /> */}
+          {/* <span>Remember me</span> */}
         </label>
-        <a href="#forgot-password" className="font-semibold text-[#633DFF]">
+        {/* <a href="#forgot-password" className="font-semibold text-[#633DFF]">
           Forgot Password?
-        </a>
+        </a> */}
       </div>
 
       <button
@@ -209,18 +209,18 @@ function LoginCard({
       </button>
 
       <div className="my-[34px] flex items-center gap-[25px] text-[18px] font-extrabold text-[#858BA9]">
-        <span className="h-px flex-1 bg-[#E4E7F0]" />
+        {/* <span className="h-px flex-1 bg-[#E4E7F0]" />
         <span>or</span>
-        <span className="h-px flex-1 bg-[#E4E7F0]" />
+        <span className="h-px flex-1 bg-[#E4E7F0]" /> */}
       </div>
-
+{/* 
       <button
         type="button"
         className="flex h-[66px] w-full items-center justify-center gap-[17px] rounded-[14px] border-2 border-[#7145FF] bg-white text-[22px] font-extrabold leading-none text-[#6242EA]"
       >
         <FiUsers className="h-[25px] w-[25px]" aria-hidden="true" />
         Login as Parent
-      </button>
+      </button> */}
 
       <footer className="mt-[38px] text-center text-[#858BA9]">
         <p className="flex items-center justify-center gap-[13px] text-[18px] font-semibold leading-none">
