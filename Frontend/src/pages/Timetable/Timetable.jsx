@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import {
   createTimetable,
@@ -48,6 +48,7 @@ const Timetable = () => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState(emptyForm);
+  const [selectedViewClassId, setSelectedViewClassId] = useState("");
 
   const uniqueClasses = useMemo(() => {
     const map = new Map();
@@ -68,6 +69,38 @@ const Timetable = () => {
     });
     return Array.from(map.values());
   }, [sections]);
+
+  const activeViewClassId = useMemo(() => {
+    const selectedClassStillExists = uniqueClasses.some(
+      (item) => String(item._id) === String(selectedViewClassId)
+    );
+
+    return selectedClassStillExists
+      ? selectedViewClassId
+      : String(uniqueClasses[0]?._id || "");
+  }, [selectedViewClassId, uniqueClasses]);
+
+  const selectedViewClass = useMemo(
+    () =>
+      uniqueClasses.find(
+        (item) => String(item._id) === String(activeViewClassId)
+      ),
+    [activeViewClassId, uniqueClasses]
+  );
+
+  const filteredTimetables = useMemo(() => {
+    if (!selectedViewClass) return [];
+
+    return timetables.filter((row) => {
+      const rowClassId = row.classId?._id || row.classId;
+      const rowClassName = row.classId?.className || row.className;
+
+      return (
+        String(rowClassId || "") === String(selectedViewClass._id) ||
+        rowClassName === selectedViewClass.className
+      );
+    });
+  }, [selectedViewClass, timetables]);
 
   const selectedClassName = useMemo(
     () =>
@@ -273,6 +306,29 @@ const Timetable = () => {
         </div>
       )}
 
+      <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+        <label
+          htmlFor="timetable-class-filter"
+          className="mb-2 block text-sm font-medium text-slate-700"
+        >
+          View timetable for class
+        </label>
+        <select
+          id="timetable-class-filter"
+          value={activeViewClassId}
+          onChange={(event) => setSelectedViewClassId(event.target.value)}
+          className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-800 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:max-w-xs"
+          disabled={loading || !uniqueClasses.length}
+        >
+          {!uniqueClasses.length && <option value="">No classes available</option>}
+          {uniqueClasses.map((item) => (
+            <option key={item._id} value={item._id}>
+              {item.className}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="overflow-hidden rounded-2xl bg-white shadow-sm border border-slate-100">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200">
@@ -295,8 +351,8 @@ const Timetable = () => {
                     Loading...
                   </td>
                 </tr>
-              ) : timetables.length ? (
-                timetables.map((row) => (
+              ) : filteredTimetables.length ? (
+                filteredTimetables.map((row) => (
                   <tr key={row._id} className="text-sm hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 font-medium text-slate-900">{row.day}</td>
                     <td className="px-6 py-4">{row.classId?.className || row.className || "-"}</td>
@@ -328,7 +384,9 @@ const Timetable = () => {
               ) : (
                 <tr>
                   <td colSpan="8" className="px-6 py-10 text-center text-slate-500">
-                    No timetable entries found. Click "Add Timetable" to create one.
+                    {selectedViewClass
+                      ? `No timetable entries found for ${selectedViewClass.className}.`
+                      : "No classes available. Create a class before adding a timetable."}
                   </td>
                 </tr>
               )}
